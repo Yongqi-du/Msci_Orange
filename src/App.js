@@ -5,6 +5,10 @@ import container_1 from './assets/images/container-1.png';
 
 import './App.css';
 
+import { Amplify } from 'aws-amplify';
+import awsExports from './aws-exports';
+Amplify.configure(awsExports);
+
 function App() {
   return (
     <div className='desktop'>
