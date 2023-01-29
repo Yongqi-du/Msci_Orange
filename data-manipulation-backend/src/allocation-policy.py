@@ -25,3 +25,16 @@ while loop to (while current_date < latest date in data)
     increment application's waiting time
     increment current_date
 '''
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+if __name__ == "__main__":
+    housing_stock = pd.read_excel("..\\data\\HRA_stock.xlsx", engine="openpyxl")
+    housing_register = pd.read_excel("..\\data\\RBK_Housing_Register.xlsx", engine="openpyxl")
+    print(housing_stock)
+    # print(housing_register)
+    housing_register_banded = housing_register.value_counts("Band").sort_index()
+    print(housing_register_banded)
+
+    
