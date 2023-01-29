@@ -6,7 +6,7 @@ ApplicationID | Band | Category | Bedroom | BandStartDate | Wait Time
 
 
 Property
-Bedroom | Category | ReleaseDate
+PropertyID | Bedroom | Category | ReleaseDate
 ReleaseDate
     1. Do we assume properties open up after certain times
     2. Can we get some tracking information on property availability
