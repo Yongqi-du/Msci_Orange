@@ -29,6 +29,7 @@ while loop to (while current_date < latest date in data)
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import datetime
 
 if __name__ == "__main__":
     housing_stock = pd.read_excel("../data/HRA_stock.xlsx", engine="openpyxl")
@@ -37,4 +38,14 @@ if __name__ == "__main__":
     print(housing_register)
     housing_register_ordered_by_band_date = housing_register.sort_values(by="BandStartDate")
     print(housing_register_ordered_by_band_date)
+    current_date = datetime.datetime(2014, 1, 1, 0, 0, 0)
 
+    last_row = housing_register_ordered_by_band_date.tail(1)
+    value = last_row['BandStartDate'].dt.to_pydatetime()
+    print(value)
+    print(value > current_date)
+    # value = str(value)
+    # value = value[:-3]
+    # date_object = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
+
+    # print(date_object > current_date)
