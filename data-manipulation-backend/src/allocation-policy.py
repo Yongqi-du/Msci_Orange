@@ -9,6 +9,7 @@ Property
 PropertyID | Bedroom | Category | ReleaseDate
 ReleaseDate
     1. Do we assume properties open up after certain times
+        Apparently council get access to homes every year (58 1 bed flats, 53 2 bed flats, etc)
     2. Can we get some tracking information on property availability
 
 Order applications by BandStartDate
@@ -37,4 +38,3 @@ if __name__ == "__main__":
     housing_register_banded = housing_register.value_counts("Band").sort_index()
     print(housing_register_banded)
 
-    
