@@ -1,55 +1,51 @@
-import logo from './logo.svg';
-import button_circle from './assets/images/button-circle.png';
+// import logo from './logo.svg';
+// import button_circle from './assets/images/button-circle.png';
 import search from './assets/images/search.png';
 import container_1 from './assets/images/container-1.png';
 
+import React, { useState } from "react";
+
 import './App.css';
 
-import { Amplify } from 'aws-amplify';
-import awsExports from './aws-exports';
-Amplify.configure(awsExports);
+import { FileUploader } from './components/FileUploader';
+import Navbar from './components/Navbar/navbar';
+
+// import { Amplify } from 'aws-amplify';
+// import awsExports from './aws-exports';
+// Amplify.configure(awsExports);
 
 function App() {
+
+  const [showMain, setShowMain] = useState(false)
+  const [showUpload, setShowUpload] = useState(false)
+
+  const toggleMain = () => {
+    setShowMain(!showMain);
+  };
+
+  const toggleUpload = () => {
+    setShowUpload(!showUpload);
+  };
+
   return (
     <div className='desktop'>
-      <div className='navbar'>
-        <div className='logo-hamburger'>
-          <img className='button-circle' src={button_circle} alt='Button Circle'/>
-          <div className='name valign-text-middle'>
-            Dashboard
-          </div>
-        </div>
-        <div className="tabs-segmented">
-          <First>Home</First>
-          <div className='tabs-segmented-item'>
-            <div className='caption-3 valign-text-middle inter-normal-topaz-10-4px'>
-              Load Data
-            </div>
-          </div>
-          <div className='tabs-segmented-item'>
-            <div className='caption-3 valign-text-middle inter-normal-topaz-10-4px'>
-              Export
-            </div>
-          </div>
-        </div>
-        <div className='right-userlist'>
-          <div className='list'>
-            <div className='list-master-2'>
-              <div className="caption-5 valign-text-middle inter-normal-eerie-black-10-4px">
-                David Hill
-              </div>
-            </div>
-          </div>
-          <div className='button-default'>
-            <div className='body'>
-              <div className='caption-6 valign-text-middle'>
-                Settings
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className='flex-row'>
+      <Navbar toggleMain={toggleMain} toggleUpload={toggleUpload}/>
+      {/* <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <button onClick={() => setShowMain(true)}>Show Main </button>
+        <button onClick={() => setShowUpload(true)}>Show Upload </button>
+      </div> */}
+      {showMain ? <Main /> : null}
+      {showUpload ? <FileUploader /> : null}
+    </div>
+  );
+}
+
+export default App;
+
+function Main() {
+
+  return (
+    <div className='flex-row'>
         <div className='navigation'>
           <div className='input-search'>
             <div className='search-master-dense'>
@@ -96,21 +92,18 @@ function App() {
           </div>
         </div>
       </div>
-    </div>
-  );
+  )
 }
 
-export default App;
+// function First(props) {
+//   const {children, className } = props;
 
-function First(props) {
-  const {children, className } = props;
-
-  return (
-      <div className={`first ${className || ""}`}>
-          <div className="caption valign-text-middle inter-medium-baltic-sea-10-4px">{children}</div>
-      </div>
-  );
-}
+//   return (
+//       <div className={`first ${className || ""}`}>
+//           <div className="caption valign-text-middle inter-medium-baltic-sea-10-4px">{children}</div>
+//       </div>
+//   );
+// }
 
 function TreeMaster (props) {
 const { caption } = props;
@@ -146,55 +139,55 @@ return (
 );
 }
 
-function RangeSlider(props) {
-const {rangeButtonProps } = props;
+// function RangeSlider(props) {
+// const {rangeButtonProps } = props;
 
-return (
-  <div className='range-slider'>
-    <div className='overlap-group'>
-      <div className='range-track'></div>
-      <div className='dot'></div>
-      <div className='dot-1'></div>
-      <div className='dot-2'></div>
-      <div className='dot-3'></div>
-      <div className='dot-4'></div>
-      <div className='dot-5'></div>
-      <div className='dot-6'></div>
-      <div className='dot-7'></div>
-      <div className='dot-8'></div>
-      <div className='dot-9'></div>
-      <div className='dot-10'></div>
-      <div className='range-thumb'></div>
-      <RangeButton />
-      <RangeButton className={rangeButtonProps.className} />
-    </div>
-  </div>
-);
-}
+// return (
+//   <div className='range-slider'>
+//     <div className='overlap-group'>
+//       <div className='range-track'></div>
+//       <div className='dot'></div>
+//       <div className='dot-1'></div>
+//       <div className='dot-2'></div>
+//       <div className='dot-3'></div>
+//       <div className='dot-4'></div>
+//       <div className='dot-5'></div>
+//       <div className='dot-6'></div>
+//       <div className='dot-7'></div>
+//       <div className='dot-8'></div>
+//       <div className='dot-9'></div>
+//       <div className='dot-10'></div>
+//       <div className='range-thumb'></div>
+//       <RangeButton />
+//       <RangeButton className={rangeButtonProps.className} />
+//     </div>
+//   </div>
+// );
+// }
 
-function RangeButton(props) {
-const { className } = props;
+// function RangeButton(props) {
+// const { className } = props;
 
-return <div className={`range-button ${className || ""}`}></div>
-}
+// return <div className={`range-button ${className || ""}`}></div>
+// }
 
-function Axis(props) {
-const { valueL } = props;
+// function Axis(props) {
+// const { valueL } = props;
 
-return (
-  <div className='axis'>
-    <div className='value-l valign-text-middle'>
-      {valueL}
-    </div>
-    <img className="x" src="" alt="X"/>
-  </div>
-);
-}
+// return (
+//   <div className='axis'>
+//     <div className='value-l valign-text-middle'>
+//       {valueL}
+//     </div>
+//     <img className="x" src="" alt="X"/>
+//   </div>
+// );
+// }
 
-const rangeButton2Data = {
-className: "range-button-1",
-};
+// const rangeButton2Data = {
+// className: "range-button-1",
+// };
 
-const rangeSliderData = {
-rangeButtonProps: rangeButton2Data,
-};
+// const rangeSliderData = {
+// rangeButtonProps: rangeButton2Data,
+// };
