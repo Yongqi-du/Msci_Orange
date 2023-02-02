@@ -50,9 +50,6 @@ if __name__ == "__main__":
     Homeless = []
     FirstTimeApplicant = []
 
-
-
-
     while current_date < final_date:
         index = 0
         row = housing_register_ordered_by_band_date.iloc[index]
