@@ -60,3 +60,4 @@ if __name__ == "__main__":
         index += 1
         current_date = current_date + datetime.timedelta(days=1)
         print(current_date)
+
