@@ -32,20 +32,32 @@ import matplotlib.pyplot as plt
 import datetime
 
 if __name__ == "__main__":
+    # Load data
     housing_stock = pd.read_excel("../data/HRA_stock.xlsx", engine="openpyxl")
     housing_register = pd.read_excel("../data/RBK_Housing_Register.xlsx", engine="openpyxl")
-    # print(housing_stock)
-    print(housing_register)
+
+    # Sort data by BandStartDate
     housing_register_ordered_by_band_date = housing_register.sort_values(by="BandStartDate")
-    print(housing_register_ordered_by_band_date)
+
+    # Initialize model (date of housing property)
     current_date = datetime.datetime(2014, 1, 1, 0, 0, 0)
 
+    # Model end date
     last_row = housing_register_ordered_by_band_date.tail(1)
-    value = last_row['BandStartDate'].dt.to_pydatetime()
-    print(value)
-    print(value > current_date)
-    # value = str(value)
-    # value = value[:-3]
-    # date_object = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
+    final_date = last_row['BandStartDate'].dt.to_pydatetime()
 
-    # print(date_object > current_date)
+    # Initialize lists of categories to use for sorting priority
+    Homeless = []
+    FirstTimeApplicant = []
+
+
+
+
+    while current_date < final_date:
+        index = 0
+        row = housing_register_ordered_by_band_date.iloc[index]
+        print(row)
+        index += 1
+        current_date = current_date + datetime.timedelta(days=1)
+        print(current_date)
+
