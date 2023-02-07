@@ -9,9 +9,9 @@ function Navbar( {toggleMain, toggleModel, toggleUpload, toggleExport, toggleUse
   return (
     <div className='navbar'>
         <div className='logo-hamburger'>
-          <img className='button-circle' src={button_circle} alt='Button Circle'/>
+          {/* <img className='button-circle' src={button_circle} alt='Button Circle'/> */}
           <div className='name valign-text-middle'>
-            Dashboard
+            Council Housing Dashboard
           </div>
         </div>
         <div className="tabs-segmented">

@@ -21,3 +21,5 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
+data-manipulation-backend/data/~$RBK_Housing_Register.xlsx
+data-manipulation-backend/.DS_Store
