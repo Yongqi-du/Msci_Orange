@@ -14,6 +14,8 @@ import Export from './components/Export/export';
 import User from './components/User/user';
 import Settings from "./components/Setting/setting";
 
+
+// Comment out the next 3 lines when editing locally
 // import { Amplify } from 'aws-amplify';
 // import awsExports from './aws-exports';
 // Amplify.configure(awsExports);
