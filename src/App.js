@@ -16,9 +16,9 @@ import Settings from "./components/Setting/setting";
 
 
 // Comment out the next 3 lines when editing locally
-// import { Amplify } from 'aws-amplify';
-// import awsExports from './aws-exports';
-// Amplify.configure(awsExports);
+import { Amplify } from 'aws-amplify';
+import awsExports from './aws-exports';
+Amplify.configure(awsExports);
 
 function App() {
 
