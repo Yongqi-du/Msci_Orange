@@ -30,7 +30,7 @@ const config = {
     secretAccessKey: SECRET_ACCESS_KEY,
 }
 
-const UploadImageToS3WithReactS3 = () => {
+export const FileUploader = () => {
 
     const [selectedFile, setSelectedFile] = useState(null);
 
@@ -51,4 +51,4 @@ const UploadImageToS3WithReactS3 = () => {
     </div>
 }
 
-export default UploadImageToS3WithReactS3;
+// export default FileUploader;
