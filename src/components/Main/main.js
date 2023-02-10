@@ -41,7 +41,7 @@ function Main() {
             <div className='overlap-group1'>
               <div className='bar-chart'>
                 <div className='overlap-group'>
-                  <div className='grid inter0normal-topaz-10-4px'>
+                  <div className='grid inter-normal-topaz-10-4px'>
                     <div className='axis-1'>
                       <div className='value-l-1 valign-text-middle'>
                         <img src={numPerHousingBand} alt="Number Per Housing Band"/>
