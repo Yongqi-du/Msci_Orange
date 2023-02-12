@@ -114,19 +114,46 @@ class Applications:
             cls(ID, Band, Category, BedroomSize, StartDate)
 
 class Modeller:
-
     def __init__(self, startDate, endDate, currentDate=None, propertyReleaseType="Randomly"):
         self.startDate = startDate
         self.endDate = endDate
         self.currentDate = currentDate if currentDate is not None else startDate
         self.propertyReleaseType = propertyReleaseType
 
-        housing_stock, application_register = loadDataFromExcel()
+        self.housing_stock = pd.read_excel("../data/HRA_stock.xlsx", engine="openpyxl")
+        self.housing_register = pd.read_excel("../data/RBK_Housing_Register.xlsx", engine="openpyxl")
 
-        Applications.from_dataframe(application_register)
+        Applications.from_dataframe(self.housing_register)
+
+        self.total1Bed = 58
+        self.total2Bed = 53
+        self.total3Bed = 29
+        self.total4Bed = 2
+
+        self.PanelMoves = 0.02
+        self.Homeless = 0.04
+        self.SocialServicesQuota = 0.04
+        self.Transfer = 0.01
+        self.HomeScheme = 0.04
+        self.FirstTimeApplicants = 0.01
+        self.TenantFinder = 0.01
+        self.Downsizer = 0.02
+        self.Decants = 0.8
     
-    def setAllocationPolicy(self):
+    def setAllocationPolicy(self, PanelMoves, Homeless, SocialServicesQuota, Transfer, HomeScheme, FirstTimeApplicants, TenantFinder, Downsizer, Decants):
+        self.PanelMoves = PanelMoves
+        self.Homeless = Homeless
+        self.SocialServicesQuota = SocialServicesQuota
+        self.Transfer = Transfer
+        self.HomeScheme = HomeScheme
+        self.FirstTimeApplicants = FirstTimeApplicants
+        self.TenantFinder = TenantFinder
+        self.Downsizer = Downsizer
+        self.Decants = Decants
 
+    def assignHouseToCategory(self):
+        BedroomSize = 1
+        Property.generateProperties()
 
     def displayCurrentDate(self):
         print("The current date is:", self.currentDate)
@@ -158,27 +185,6 @@ class Modeller:
     # def quarterAllocation
     
 
-def loadDataFromExcel():
-    # Load Data
-    housing_stock = pd.read_excel("../data/HRA_stock.xlsx", engine="openpyxl")
-    housing_register = pd.read_excel("../data/RBK_Housing_Register.xlsx", engine="openpyxl")
-
-    return housing_stock, housing_register
-
-def setPropertyAmount():
-    total1Bed = 58
-    total2Bed = 53
-    total3Bed = 29
-    total4Bed = 2
-
-    Decants = 0.8
-    
-    PanelMoves = 0.02
-    SocialServicesQuota = 0.04
-    Transfer = 0.01
-    HomeScheme = 0.04
-    FirstTimeApplicants = 0.01
-    Tenant
 
     
 
