@@ -29,7 +29,7 @@ while loop to (while current_date < latest date in data)
 
 import pandas as pd
 import matplotlib.pyplot as plt
-import datetime
+from datetime import datetime, timedelta
 import random
 
 class Property:
@@ -113,6 +113,50 @@ class Applications:
             StartDate = row['BandStartDate']
             cls(ID, Band, Category, BedroomSize, StartDate)
 
+class Modeller:
+
+    def __init__(self, startDate, endDate, currentDate=None, propertyReleaseType="Randomly"):
+        self.startDate = startDate
+        self.endDate = endDate
+        self.currentDate = currentDate if currentDate is not None else startDate
+        self.propertyReleaseType = propertyReleaseType
+
+        housing_stock, application_register = loadDataFromExcel()
+
+        Applications.from_dataframe(application_register)
+    
+    def setAllocationPolicy(self):
+
+
+    def displayCurrentDate(self):
+        print("The current date is:", self.currentDate)
+
+    def increment_date(self):
+        self.currentDate += timedelta(days=1)
+        if self.currentDate > self.endDate:
+            return False
+        return True
+
+    '''
+    Returns the number of applicants waiting and assigned for the day
+    '''
+    # def dayAllocation
+
+    '''
+    Returns the number of applicants waiting and assigned for the week
+    '''
+    # def weekAllocation
+
+    '''
+    Returns the number of applicants waiting and assigned for the month
+    '''
+    # def monthAllocation
+
+    '''
+    Returns the number of applicants waiting and assigned for the quarter
+    '''
+    # def quarterAllocation
+    
 
 def loadDataFromExcel():
     # Load Data
@@ -128,8 +172,15 @@ def setPropertyAmount():
     total4Bed = 2
 
     Decants = 0.8
+    
+    PanelMoves = 0.02
     SocialServicesQuota = 0.04
+    Transfer = 0.01
+    HomeScheme = 0.04
+    FirstTimeApplicants = 0.01
+    Tenant
 
+    
 
 if __name__ == "__main__":
     housing_stock, housing_register = loadDataFromExcel()
