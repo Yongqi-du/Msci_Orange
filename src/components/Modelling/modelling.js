@@ -1,7 +1,7 @@
 import './style.css';
 
-import charts from './group project-6.png';
-import edits from './group project-9.png';
+import charts from './group project-6.jpg';
+import edits from './group project-9.jpg';
 
 function Modelling() {
     return (
