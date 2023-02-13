@@ -30,345 +30,231 @@ while loop to (while current_date < latest date in data)
 import pandas as pd
 import matplotlib.pyplot as plt
 import datetime
+import random
 
-def sort_category_by_band(current_application, current_application_band, current_application_id):
-    '''
-    Assign application to corresponding list based on AppCategory
-    '''
-    current_application_category = current_application["AppCategory"]
-    if current_application_category == "Armed Forces Personnel":
-        if current_application_band == "Band 1":
-            ArmedForcesPersonnel[0].append(current_application_id)
-        elif current_application_band == "Band 2":
-            ArmedForcesPersonnel[1].append(current_application_id)
-        elif current_application_band == "Band 3":
-            ArmedForcesPersonnel[2].append(current_application_id)
-        elif current_application_band == "Band 4":
-            ArmedForcesPersonnel[3].append(current_application_id)
-        elif current_application_band == "Band 5":
-            ArmedForcesPersonnel[4].append(current_application_id)
+class Property:
+    id_counter = 0
+    instances = []
 
-    elif current_application_category == "Armed Forces Veterans":
-        if current_application_band == "Band 1":
-            ArmedForcesVeterans[0].append(current_application_id)
-        elif current_application_band == "Band 2":
-            ArmedForcesVeterans[1].append(current_application_id)
-        elif current_application_band == "Band 3":
-            ArmedForcesVeterans[2].append(current_application_id)
-        elif current_application_band == "Band 4":
-            ArmedForcesVeterans[3].append(current_application_id)
-        elif current_application_band == "Band 5":
-            ArmedForcesVeterans[4].append(current_application_id)
+    def __init__(self, BedroomSize, Category, ReleaseDate):
+        self.PropertyID = Property.id_counter
+        Property.id_counter += 1
+        self.BedroomSize = BedroomSize
+        self.Category = Category
+        self.ReleaseDate = ReleaseDate
+        Property.instances.append(self)
 
-    elif current_application_category == "First time applicants":
-        if current_application_band == "Band 1":
-            FirstTimeApplicant[0].append(current_application_id)
-        elif current_application_band == "Band 2":
-            FirstTimeApplicant[1].append(current_application_id)
-        elif current_application_band == "Band 3":
-            FirstTimeApplicant[2].append(current_application_id)
-        elif current_application_band == "Band 4":
-            FirstTimeApplicant[3].append(current_application_id)
-        elif current_application_band == "Band 5":
-            FirstTimeApplicant[4].append(current_application_id)
+    def __str__(self):
+        return f"PropertyID: {self.ApplicationID}, Category: {self.Category}, BedroomSize: {self.BedroomSize}, ReleaseDate: {self.ReleaseDate}"
 
-    elif current_application_category == "Grypsy & Travellers":
-        if current_application_band == "Band 1":
-            GypsyAndTravellers[0].append(current_application_id)
-        elif current_application_band == "Band 2":
-            GypsyAndTravellers[1].append(current_application_id)
-        elif current_application_band == "Band 3":
-            GypsyAndTravellers[2].append(current_application_id)
-        elif current_application_band == "Band 4":
-            GypsyAndTravellers[3].append(current_application_id)
-        elif current_application_band == "Band 5":
-            GypsyAndTravellers[4].append(current_application_id)
+    @classmethod
+    def getPropertiesByRoomSize(cls, BedroomSize):
+        return [property for property in cls.instances if property.BedroomSize == BedroomSize]
 
-    elif current_application_category == "home scheme":
-        if current_application_band == "Band 1":
-            homescheme[0].append(current_application_id)
-        elif current_application_band == "Band 2":
-            homescheme[1].append(current_application_id)
-        elif current_application_band == "Band 3":
-            homescheme[2].append(current_application_id)
-        elif current_application_band == "Band 4":
-            homescheme[3].append(current_application_id)
-        elif current_application_band == "Band 5":
-            homescheme[4].append(current_application_id)
+    @classmethod
+    def getPropertiesByCategory(cls, Category):
+        return [property for property in cls.instances if property.Category == Category]
+
+    @classmethod
+    def getPropertiesByDate(cls, Date):
+        return [property for property in cls.instances if property.ReleaseDate == Date]
+    
+    @classmethod
+    def generateProperties(cls, BedroomSize, Category, ReleaseDate, number):
+        for i in range(number):
+            cls(BedroomSize, Category, ReleaseDate)
+
+    @classmethod
+    def assignProperty(cls, BedroomSize, Category):
+        # Find a property instance with the same BedroomSize and Category
+        for property in cls.instances:
+            if property.BedroomSize == BedroomSize and property.Category == Category:
+                # Remove the property instance from instances and return it
+                cls.instances.remove(property)
+                return property
+
+        # If no matching property instance is found, return None
+        return None
+
+class Applications:
+    instances = []
+    
+    def __init__(self, ID, Band, Category, BedroomSize, StartDate):
+        self.ApplicationID = ID
+        self.Band = Band
+        self.Category = Category
+        self.BedroomSize = BedroomSize
+        self.StartDate = StartDate
+        self.WaitTime = 0
+        Applications.instances.append(self)
+
+    def __str__(self):
+        return f"  ApplicationID: {self.ApplicationID}, Band: {self.Band}, Category: {self.Category}, BedroomSize: {self.BedroomSize}, StartDate: {self.StartDate}"
+    
+    @classmethod
+    def getApplicationsByBand(cls, Band):
+        return [applications for applications in cls.instances if applications.Band == Band]
+    
+    @classmethod
+    def getApplicationsBySize(cls, BedroomSize):
+        return [applications for applications in cls.instances if applications.BedroomSize == BedroomSize]
+
+    @classmethod
+    def getApplicationsByCategory(cls, Category):
+        return [applications for applications in cls.instances if applications.Category == Category]
+
+    @classmethod
+    def getApplicationsByDate(cls, Date):
+        datetime_date = datetime.datetime.combine(Date, datetime.datetime.min.time())
+        return [application for application in cls.instances if application.StartDate == datetime_date]
+
+
+    @classmethod
+    def from_dataframe(cls, df):
+        for index, row in df.iterrows():
+            if index is None or row is None:
+                break
+            if any(pd.isna(row)):
+                continue
+            ID = row.get('ApplicationId', None)
+            Band = row.get('Band', 5)
+            Category = row.get('AppCategory', "Other")
+            BedroomSize = row.get('Bedroom', "1")
+            StartDate = row['BandStartDate']
+            cls(ID, Band, Category, BedroomSize, StartDate)
+    
+    @classmethod
+    def getApplicationsBySizeAndCategory(cls, BedroomSize, Category):
+        # Find all application instances of the requested BedroomSize and Category
+        applications = [application for application in cls.instances if application.BedroomSize == BedroomSize and application.Category == Category]
+
+        # Split the applications into lists based on their Band
+        band_applications = {}
+        for application in applications:
+            if application.Band not in band_applications:
+                band_applications[application.Band] = []
+            band_applications[application.Band].append(application)
+        
+        # Sort each band list by their StartDate
+        for band, application_list in band_applications.items():
+            application_list.sort(key=lambda x: x.StartDate)
+
+        # Return the dictionary of band applications
+        return band_applications
+
+    @classmethod
+    def findPriority(cls, BedroomSize, Category):
+        waitingList = Applications.getApplicationsBySizeAndCategory(BedroomSize, Category)
+        # Find the list in band_applications with the lowest numbered band
+        priority_band = min(waitingList.keys())
+
+        # Return the first element of the priority_band list, if it exists
+        priority_list = waitingList.get(priority_band, [])
+        if priority_list:
+            candidate = priority_list[0]
+            cls.instances.remove(candidate)
+            return candidate
+
+        # If no priority_list is found, return None
+        return None
+
+class Modeller:
+    policy = {
+        "PanelMoves": 0.02,
+        "Homeless": 0.04,
+        "SocialServicesQuota": 0.04,
+        "Transfer": 0.01,
+        "HomeScheme": 0.04,
+        "FirstTimeApplicants": 0.01,
+        "TenantFinder": 0.01,
+        "Downsizer": 0.02,
+        "Decants": 0.8
+    }
+
+    supply = {
+        "1": 58,
+        "2": 53,
+        "3": 29,
+        "4": 2
+    }
+
+    def __init__(self, startDate, endDate, currentDate=None, propertyReleaseType="Randomly"):
+        self.startDate = startDate
+        self.endDate = endDate
+        self.currentDate = currentDate if currentDate is not None else startDate
+        self.propertyReleaseType = propertyReleaseType
+
+        self.housing_stock = pd.read_excel("../data/HRA_stock.xlsx", engine="openpyxl")
+        self.housing_register = pd.read_excel("../data/RBK_Housing_Register.xlsx", engine="openpyxl")
+
+        Applications.from_dataframe(self.housing_register)
+
+        self.assignHouseToCategory(1, "Decants")
+
+        while self.currentDate < self.endDate:
+            self.displayCurrentDate()
+            # print(self.currentDate)
+            todayApplication = Applications.getApplicationsByDate(self.currentDate)
+            for application in todayApplication:
+                print(application)
+            self.currentDate += datetime.timedelta(days=1)
+
+            # Check if there are property
             
-    elif current_application_category == "Homeless":
-        if current_application_band == "Band 1":
-            Homeless[0].append(current_application_id)
-        elif current_application_band == "Band 2":
-            Homeless[1].append(current_application_id)
-        elif current_application_band == "Band 3":
-            Homeless[2].append(current_application_id)
-        elif current_application_band == "Band 4":
-            Homeless[3].append(current_application_id)
-        elif current_application_band == "Band 5":
-            Homeless[4].append(current_application_id)
+            # Find the appropriate candidate
 
-    elif current_application_category == "Mobility Schemes (Pan London)":
-        if current_application_band == "Band 1":
-            MobilitySchemes[0].append(current_application_id)
-        elif current_application_band == "Band 2":
-            MobilitySchemes[1].append(current_application_id)
-        elif current_application_band == "Band 3":
-            MobilitySchemes[2].append(current_application_id)
-        elif current_application_band == "Band 4":
-            MobilitySchemes[3].append(current_application_id)
-        elif current_application_band == "Band 5":
-            MobilitySchemes[4].append(current_application_id)
+            # Remove the candidate and the property from storage
+        
+        print("Terminating Model")
+        exit()
 
-    elif current_application_category == "Panel moves":
-        if current_application_band == "Band 1":
-            MobilitySchemes[0].append(current_application_id)
-        elif current_application_band == "Band 2":
-            MobilitySchemes[1].append(current_application_id)
-        elif current_application_band == "Band 3":
-            MobilitySchemes[2].append(current_application_id)
-        elif current_application_band == "Band 4":
-            MobilitySchemes[3].append(current_application_id)
-        elif current_application_band == "Band 5":
-            MobilitySchemes[4].append(current_application_id)
+    
+    def setAllocationPolicy(self, PanelMoves, Homeless, SocialServicesQuota, Transfer, HomeScheme, FirstTimeApplicants, TenantFinder, Downsizer, Decants):
+        # Update the policy dictionary with the new values
+        self.policy["PanelMoves"] = PanelMoves
+        self.policy["Homeless"] = Homeless
+        self.policy["SocialServicesQuota"] = SocialServicesQuota
+        self.policy["Transfer"] = Transfer
+        self.policy["HomeScheme"] = HomeScheme
+        self.policy["FirstTimeApplicants"] = FirstTimeApplicants
+        self.policy["TenantFinder"] = TenantFinder
+        self.policy["Downsizer"] = Downsizer
+        self.policy["Decants"] = Decants
 
-    elif current_application_category == "Panel moves":
-        if current_application_band == "Band 1":
-            PanelMoves[0].append(current_application_id)
-        elif current_application_band == "Band 2":
-            PanelMoves[1].append(current_application_id)
-        elif current_application_band == "Band 3":
-            PanelMoves[2].append(current_application_id)
-        elif current_application_band == "Band 4":
-            PanelMoves[3].append(current_application_id)
-        elif current_application_band == "Band 5":
-            PanelMoves[4].append(current_application_id)
+    def assignHouseToCategory(self, BedroomSize, Category):
+        total = self.supply[str(BedroomSize)]
+        assignedForCategory = int(total * self.policy[Category])
 
-    elif current_application_category == "Permanent Decants":
-        if current_application_band == "Band 1":
-            PermanentDecants[0].append(current_application_id)
-        elif current_application_band == "Band 2":
-            PermanentDecants[1].append(current_application_id)
-        elif current_application_band == "Band 3":
-            PermanentDecants[2].append(current_application_id)
-        elif current_application_band == "Band 4":
-            PermanentDecants[3].append(current_application_id)
-        elif current_application_band == "Band 5":
-            PermanentDecants[4].append(current_application_id)
+        Property.generateProperties(BedroomSize, Category, self.currentDate, assignedForCategory)
+        
 
-    elif current_application_category == "Sheltered":
-        if current_application_band == "Band 1":
-            Sheltered[0].append(current_application_id)
-        elif current_application_band == "Band 2":
-            Sheltered[1].append(current_application_id)
-        elif current_application_band == "Band 3":
-            Sheltered[2].append(current_application_id)
-        elif current_application_band == "Band 4":
-            Sheltered[3].append(current_application_id)
-        elif current_application_band == "Band 5":
-            Sheltered[4].append(current_application_id)
+    def displayCurrentDate(self):
+        print("The current date is:", self.currentDate)
 
-    elif current_application_category == "Social Services Quota (adult)":
-        if current_application_band == "Band 1":
-            SocialServicesQuota[0].append(current_application_id)
-        elif current_application_band == "Band 2":
-            SocialServicesQuota[1].append(current_application_id)
-        elif current_application_band == "Band 3":
-            SocialServicesQuota[2].append(current_application_id)
-        elif current_application_band == "Band 4":
-            SocialServicesQuota[3].append(current_application_id)
-        elif current_application_band == "Band 5":
-            SocialServicesQuota[4].append(current_application_id)
+    '''
+    Returns the number of applicants waiting and assigned for the day
+    '''
+    # def dayAllocation
 
-    elif current_application_category == "Social Services Quota (Children)":
-        if current_application_band == "Band 1":
-            SocialServicesQuota[0].append(current_application_id)
-        elif current_application_band == "Band 2":
-            SocialServicesQuota[1].append(current_application_id)
-        elif current_application_band == "Band 3":
-            SocialServicesQuota[2].append(current_application_id)
-        elif current_application_band == "Band 4":
-            SocialServicesQuota[3].append(current_application_id)
-        elif current_application_band == "Band 5":
-            SocialServicesQuota[4].append(current_application_id)
+    '''
+    Returns the number of applicants waiting and assigned for the week
+    '''
+    # def weekAllocation
 
-    elif current_application_category == "Spare Room downsizer":
-        if current_application_band == "Band 1":
-            SpareRoomDownsizer[0].append(current_application_id)
-        elif current_application_band == "Band 2":
-            SpareRoomDownsizer[1].append(current_application_id)
-        elif current_application_band == "Band 3":
-            SpareRoomDownsizer[2].append(current_application_id)
-        elif current_application_band == "Band 4":
-            SpareRoomDownsizer[3].append(current_application_id)
-        elif current_application_band == "Band 5":
-            SpareRoomDownsizer[4].append(current_application_id)
+    '''
+    Returns the number of applicants waiting and assigned for the month
+    '''
+    # def monthAllocation
 
-    elif current_application_category == "Staff rehousing":
-        if current_application_band == "Band 1":
-            StaffRehousing[0].append(current_application_id)
-        elif current_application_band == "Band 2":
-            StaffRehousing[1].append(current_application_id)
-        elif current_application_band == "Band 3":
-            StaffRehousing[2].append(current_application_id)
-        elif current_application_band == "Band 4":
-            StaffRehousing[3].append(current_application_id)
-        elif current_application_band == "Band 5":
-            StaffRehousing[4].append(current_application_id)
-
-    elif current_application_category == "Temporary Decants":
-        if current_application_band == "Band 1":
-            TemporaryDecants[0].append(current_application_id)
-        elif current_application_band == "Band 2":
-            TemporaryDecants[1].append(current_application_id)
-        elif current_application_band == "Band 3":
-            TemporaryDecants[2].append(current_application_id)
-        elif current_application_band == "Band 4":
-            TemporaryDecants[3].append(current_application_id)
-        elif current_application_band == "Band 5":
-            TemporaryDecants[4].append(current_application_id)
-
-    elif current_application_category == "Tenant Finder Service (TFS) Prevention":
-        if current_application_band == "Band 1":
-            TenantFinderServicePrevention[0].append(current_application_id)
-        elif current_application_band == "Band 2":
-            TenantFinderServicePrevention[1].append(current_application_id)
-        elif current_application_band == "Band 3":
-            TenantFinderServicePrevention[2].append(current_application_id)
-        elif current_application_band == "Band 4":
-            TenantFinderServicePrevention[3].append(current_application_id)
-        elif current_application_band == "Band 5":
-            TenantFinderServicePrevention[4].append(current_application_id)
-
-    elif current_application_category == "Transfer":
-        if current_application_band == "Band 1":
-            Transfer[0].append(current_application_id)
-        elif current_application_band == "Band 2":
-            Transfer[1].append(current_application_id)
-        elif current_application_band == "Band 3":
-            Transfer[2].append(current_application_id)
-        elif current_application_band == "Band 4":
-            Transfer[3].append(current_application_id)
-        elif current_application_band == "Band 5":
-            Transfer[4].append(current_application_id)
-
-    elif current_application_category == "Under occupier":
-        if current_application_band == "Band 1":
-            UnderOccupier[0].append(current_application_id)
-        elif current_application_band == "Band 2":
-            UnderOccupier[1].append(current_application_id)
-        elif current_application_band == "Band 3":
-            UnderOccupier[2].append(current_application_id)
-        elif current_application_band == "Band 4":
-            UnderOccupier[3].append(current_application_id)
-        elif current_application_band == "Band 5":
-            UnderOccupier[4].append(current_application_id)
-
-def randomGenerateProperty(num1Bed, total1Bed, num2Bed, total2Bed, num3Bed, total3Bed, num4Bed, total4Bed):
-    avail1Bed = False
-    avail2Bed = False
-    avail3Bed = False
-    avail4Bed = False
-    if num1Bed < total1Bed:
-        avail1Bed = True
-    if num2Bed < total2Bed:
-        avail2Bed = True
-    if num3Bed < total3Bed:
-        avail3Bed = True
-    if num4Bed < total4Bed:
-        avail4Bed = True
-    return (avail1Bed, avail2Bed, avail3Bed, avail4Bed)
-
+    '''
+    Returns the number of applicants waiting and assigned for the quarter
+    '''
+    # def quarterAllocation
+    
 
 if __name__ == "__main__":
-    # Load data
-    housing_stock = pd.read_excel("../data/HRA_stock.xlsx", engine="openpyxl")
-    housing_register = pd.read_excel("../data/RBK_Housing_Register.xlsx", engine="openpyxl")
+    
+    modeller = Modeller(startDate=datetime.date(2022, 1, 1), endDate=datetime.date(2022, 12, 31))
 
-    # Sort data by BandStartDate
-    housing_register_ordered_by_band_date = housing_register.sort_values(by="BandStartDate")
 
-    # Initialize model (date of housing property)
-    current_date = datetime.datetime(2022, 7, 31, 0, 0, 0)
-
-    # Model end date
-    last_row = housing_register_ordered_by_band_date.tail(1)
-    # final_date = last_row['BandStartDate'].dt.to_pydatetime()
-    final_date = datetime.datetime(2022, 10, 1, 0, 0, 0)
-
-    # Initialize lists of categories to use for sorting priority
-    ArmedForcesPersonnel = [[], [], [], [], []]
-    ArmedForcesVeterans = [[], [], [], [], []]
-    FirstTimeApplicant = [[], [], [], [], []]
-    GypsyAndTravellers=[[], [], [], [], []]
-    homescheme = [[], [], [], [], []]
-    Homeless = [[], [], [], [], []]
-    MobilitySchemes = [[], [], [], [], []]
-    PanelMoves = [[], [], [], [], []]
-    PermanentDecants = [[], [], [], [], []]
-    Sheltered = [[], [], [], [], []]
-    SocialServicesQuota = [[], [], [], [], []]
-    SpareRoomDownsizer = [[], [], [], [], []]
-    StaffRehousing = [[], [], [], [], []]
-    TemporaryDecants = [[], [], [], [], []]
-    TenantFinderServicePrevention = [[], [], [], [], []]
-    Transfer = [[], [], [], [], []]
-    UnderOccupier = [[], [], [], [], []]
-
-    # Keep track of each property types released
-    num1Bed = 0
-    total1Bed = 58
-    num2Bed = 0
-    total2Bed = 53
-    num3Bed = 0
-    total3Bed = 40
-    num4Bed = 0
-    total4Bed = 20
-
-    '''
-    Run model until date is past final_date
-    Final_date can be:
-        1. latest date in data
-        2. target date to run modelling
-    '''
-    index = 0
-    maxIndex = len(housing_register_ordered_by_band_date)-1
-    # print(maxIndex)
-    while current_date < final_date:
-        '''
-        Increment index until row's BandStartDate is larger than current date
-        '''
-        current_application = housing_register_ordered_by_band_date.iloc[index]
-        current_application_date = current_application["BandStartDate"]
-        # print(current_application_date)
-
-        while current_application_date < current_date:
-            if index < maxIndex:
-                index += 1
-                # print(index)
-                current_application = housing_register_ordered_by_band_date.iloc[index]
-                current_application_date = current_application["BandStartDate"]
-                current_application_id = current_application["ApplicationId"]
-                current_application_band = current_application['Band']
-                
-                sort_category_by_band(current_application, current_application_band, current_application_id)
-
-            else: 
-                break
-        
-        '''
-        Randomly release properties each day
-        1. Keep track of expected number of property per year
-        2. If that number has not been reached, generate a random number 
-        '''
-        avail1Bed, avail2Bed, avail3Bed, avail4Bed = randomGenerateProperty(num1Bed, total1Bed, num2Bed, total2Bed, num3Bed, total3Bed, num4Bed, total4Bed)
-        
-        
-        # print(current_application_date)
-        # print(index)
-        
-        current_date = current_date + datetime.timedelta(days=1)
-        # print(current_date)
-
-    print(UnderOccupier)
 
