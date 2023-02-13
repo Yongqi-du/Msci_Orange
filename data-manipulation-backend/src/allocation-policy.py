@@ -29,7 +29,7 @@ while loop to (while current_date < latest date in data)
 
 import pandas as pd
 import matplotlib.pyplot as plt
-from datetime import datetime, timedelta
+import datetime
 import random
 
 class Property:
@@ -64,9 +64,20 @@ class Property:
         for i in range(number):
             cls(BedroomSize, Category, ReleaseDate)
 
+    @classmethod
+    def assignProperty(cls, BedroomSize, Category):
+        # Find a property instance with the same BedroomSize and Category
+        for property in cls.instances:
+            if property.BedroomSize == BedroomSize and property.Category == Category:
+                # Remove the property instance from instances and return it
+                cls.instances.remove(property)
+                return property
+
+        # If no matching property instance is found, return None
+        return None
+
 class Applications:
     instances = []
-    categories = {}
     
     def __init__(self, ID, Band, Category, BedroomSize, StartDate):
         self.ApplicationID = ID
@@ -76,16 +87,9 @@ class Applications:
         self.StartDate = StartDate
         self.WaitTime = 0
         Applications.instances.append(self)
-        
-        if Category not in Applications.categories:
-            Applications.categories[Category] = {}
-        if Band not in Applications.categories[Category]:
-            Applications.categories[Category][Band] = []
-        Applications.categories[Category][Band].append(self)
-        Applications.categories[Category][Band].sort(key=lambda x: x.StartDate)
 
     def __str__(self):
-        return f"ApplicationID: {self.ApplicationID}, Band: {self.Band}, Category: {self.Category}, BedroomSize: {self.BedroomSize}, StartDate: {self.StartDate}"
+        return f"  ApplicationID: {self.ApplicationID}, Band: {self.Band}, Category: {self.Category}, BedroomSize: {self.BedroomSize}, StartDate: {self.StartDate}"
     
     @classmethod
     def getApplicationsByBand(cls, Band):
@@ -97,7 +101,13 @@ class Applications:
 
     @classmethod
     def getApplicationsByCategory(cls, Category):
-        return cls.categories.get(Category, [])
+        return [applications for applications in cls.instances if applications.Category == Category]
+
+    @classmethod
+    def getApplicationsByDate(cls, Date):
+        datetime_date = datetime.datetime.combine(Date, datetime.datetime.min.time())
+        return [application for application in cls.instances if application.StartDate == datetime_date]
+
 
     @classmethod
     def from_dataframe(cls, df):
@@ -112,8 +122,62 @@ class Applications:
             BedroomSize = row.get('Bedroom', "1")
             StartDate = row['BandStartDate']
             cls(ID, Band, Category, BedroomSize, StartDate)
+    
+    @classmethod
+    def getApplicationsBySizeAndCategory(cls, BedroomSize, Category):
+        # Find all application instances of the requested BedroomSize and Category
+        applications = [application for application in cls.instances if application.BedroomSize == BedroomSize and application.Category == Category]
+
+        # Split the applications into lists based on their Band
+        band_applications = {}
+        for application in applications:
+            if application.Band not in band_applications:
+                band_applications[application.Band] = []
+            band_applications[application.Band].append(application)
+        
+        # Sort each band list by their StartDate
+        for band, application_list in band_applications.items():
+            application_list.sort(key=lambda x: x.StartDate)
+
+        # Return the dictionary of band applications
+        return band_applications
+
+    @classmethod
+    def findPriority(cls, BedroomSize, Category):
+        waitingList = Applications.getApplicationsBySizeAndCategory(BedroomSize, Category)
+        # Find the list in band_applications with the lowest numbered band
+        priority_band = min(waitingList.keys())
+
+        # Return the first element of the priority_band list, if it exists
+        priority_list = waitingList.get(priority_band, [])
+        if priority_list:
+            candidate = priority_list[0]
+            cls.instances.remove(candidate)
+            return candidate
+
+        # If no priority_list is found, return None
+        return None
 
 class Modeller:
+    policy = {
+        "PanelMoves": 0.02,
+        "Homeless": 0.04,
+        "SocialServicesQuota": 0.04,
+        "Transfer": 0.01,
+        "HomeScheme": 0.04,
+        "FirstTimeApplicants": 0.01,
+        "TenantFinder": 0.01,
+        "Downsizer": 0.02,
+        "Decants": 0.8
+    }
+
+    supply = {
+        "1": 58,
+        "2": 53,
+        "3": 29,
+        "4": 2
+    }
+
     def __init__(self, startDate, endDate, currentDate=None, propertyReleaseType="Randomly"):
         self.startDate = startDate
         self.endDate = endDate
@@ -125,44 +189,41 @@ class Modeller:
 
         Applications.from_dataframe(self.housing_register)
 
-        self.total1Bed = 58
-        self.total2Bed = 53
-        self.total3Bed = 29
-        self.total4Bed = 2
+        self.assignHouseToCategory(1, "Decants")
 
-        self.PanelMoves = 0.02
-        self.Homeless = 0.04
-        self.SocialServicesQuota = 0.04
-        self.Transfer = 0.01
-        self.HomeScheme = 0.04
-        self.FirstTimeApplicants = 0.01
-        self.TenantFinder = 0.01
-        self.Downsizer = 0.02
-        self.Decants = 0.8
+        while self.currentDate < self.endDate:
+            self.displayCurrentDate()
+            # print(self.currentDate)
+            todayApplication = Applications.getApplicationsByDate(self.currentDate)
+            for application in todayApplication:
+                print(application)
+            self.currentDate += datetime.timedelta(days=1)
+        
+        print("Terminating Model")
+        exit()
+
     
     def setAllocationPolicy(self, PanelMoves, Homeless, SocialServicesQuota, Transfer, HomeScheme, FirstTimeApplicants, TenantFinder, Downsizer, Decants):
-        self.PanelMoves = PanelMoves
-        self.Homeless = Homeless
-        self.SocialServicesQuota = SocialServicesQuota
-        self.Transfer = Transfer
-        self.HomeScheme = HomeScheme
-        self.FirstTimeApplicants = FirstTimeApplicants
-        self.TenantFinder = TenantFinder
-        self.Downsizer = Downsizer
-        self.Decants = Decants
+        # Update the policy dictionary with the new values
+        self.policy["PanelMoves"] = PanelMoves
+        self.policy["Homeless"] = Homeless
+        self.policy["SocialServicesQuota"] = SocialServicesQuota
+        self.policy["Transfer"] = Transfer
+        self.policy["HomeScheme"] = HomeScheme
+        self.policy["FirstTimeApplicants"] = FirstTimeApplicants
+        self.policy["TenantFinder"] = TenantFinder
+        self.policy["Downsizer"] = Downsizer
+        self.policy["Decants"] = Decants
 
-    def assignHouseToCategory(self):
-        BedroomSize = 1
-        Property.generateProperties()
+    def assignHouseToCategory(self, BedroomSize, Category):
+        total = self.supply[str(BedroomSize)]
+        assignedForCategory = int(total * self.policy[Category])
+
+        Property.generateProperties(BedroomSize, Category, self.currentDate, assignedForCategory)
+        
 
     def displayCurrentDate(self):
         print("The current date is:", self.currentDate)
-
-    def increment_date(self):
-        self.currentDate += timedelta(days=1)
-        if self.currentDate > self.endDate:
-            return False
-        return True
 
     '''
     Returns the number of applicants waiting and assigned for the day
@@ -185,15 +246,9 @@ class Modeller:
     # def quarterAllocation
     
 
-
-    
-
 if __name__ == "__main__":
-    housing_stock, housing_register = loadDataFromExcel()
     
-    Applications.from_dataframe(housing_register)
-    # applicationsByCategory = Applications.getApplicationsByCategory("Transfer")
-    applications = Applications.getApplicationsBySize(4)
-    for application in applications:
-        print(application)
+    modeller = Modeller(startDate=datetime.date(2022, 1, 1), endDate=datetime.date(2022, 12, 31))
+
+
 
