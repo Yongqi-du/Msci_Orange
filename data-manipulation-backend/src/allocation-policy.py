@@ -198,6 +198,12 @@ class Modeller:
             for application in todayApplication:
                 print(application)
             self.currentDate += datetime.timedelta(days=1)
+
+            # Check if there are property
+            
+            # Find the appropriate candidate
+
+            # Remove the candidate and the property from storage
         
         print("Terminating Model")
         exit()
