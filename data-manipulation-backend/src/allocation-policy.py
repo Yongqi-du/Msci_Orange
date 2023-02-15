@@ -48,6 +48,12 @@ class Property:
     def __str__(self):
         return f"PropertyID: {self.PropertyID}, Category: {self.Category}, BedroomSize: {self.BedroomSize}, ReleaseDate: {self.ReleaseDate}"
 
+    def getSize(self):
+        return self.BedroomSize
+    
+    def getCategory(self):
+        return self.Category
+
     @classmethod
     def getAllProperties(cls):
         return [properties for properties in cls.instances]
@@ -117,6 +123,13 @@ class Applications:
         return len(cls.instances)
 
     @classmethod
+    def checkExistence(cls, instance):
+        if instance in cls.instances:
+            return True
+        else: 
+            return False
+
+    @classmethod
     def getApplicationsByBand(cls, Band):
         return [applications for applications in cls.instances if applications.Band == Band]
     
@@ -148,7 +161,33 @@ class Applications:
             ID = row.get('ApplicationId', None)
             Band = row.get('Band', 5)
             Category = row.get('AppCategory', "Other")
-            BedroomSize = row.get('Bedroom', "1")
+            if Category == "Temporary Decants": 
+                Category = "Decants"
+            elif Category == "Permanent Decants":
+                Category = "Decants"
+            elif Category == "First time applicants":
+                Category = "FirstTimeApplicant"
+            elif Category == "home scheme":
+                Category = "HomeScheme"
+            elif Category == "Homeless":
+                Category = "Homeless"
+            elif Category == "Social Services Quota (adult)":
+                Category = "SocialServicesQuota"
+            elif Category == "Social Services Quota (Children)":
+                Category = "SocialServicesQuota"
+            elif Category == "Spare Room downsizer":
+                Category = "Downsizer"
+            elif Category == "Under occupier":
+                Category = "Downsizer"
+            elif Category == "Transfer":
+                Category = "Transfer"
+            elif Category == "Tenant Finder Service (TFS) Prevention":
+                Category = "TenantFinder"
+            elif Category == "Panel moves":
+                Category = "PanelMoves"
+            else: 
+                Category = "Other"
+            BedroomSize = int(row.get('Bedroom', 1))
             StartDate = row['BandStartDate']
             cls(ID, Band, Category, BedroomSize, StartDate)
     
@@ -174,6 +213,11 @@ class Applications:
     @classmethod
     def findPriority(cls, BedroomSize, Category):
         waitingList = Applications.getApplicationsBySizeAndCategory(BedroomSize, Category)
+        
+        # Check if the dictionary is empty
+        if not waitingList:
+            return None
+        
         # Find the list in band_applications with the lowest numbered band
         priority_band = min(waitingList.keys())
 
@@ -181,19 +225,26 @@ class Applications:
         priority_list = waitingList.get(priority_band, [])
         if priority_list:
             candidate = priority_list[0]
-            cls.instances.remove(candidate)
+            # cls.instances.remove(candidate)
             return candidate
 
         # If no priority_list is found, return None
         return None
 
+
     @classmethod
-    def removeApplication(cls, ApplicationID):
+    def removeApplicationByID(cls, ApplicationID):
         for application in cls.instances:
             if application.ApplicationID == ApplicationID:
                 cls.instances.remove(application)
                 return True
         return False
+
+    @classmethod
+    def removeApplication(cls, instance):
+        if instance in cls.instances:
+            cls.instances.remove(instance)
+
 
 class Modeller:
     policy = {
@@ -205,7 +256,8 @@ class Modeller:
         "FirstTimeApplicants": 0.01,
         "TenantFinder": 0.01,
         "Downsizer": 0.02,
-        "Decants": 0.8
+        "Decants": 0.8,
+        "Other": 0.01
     }
 
     supply = {
@@ -267,10 +319,11 @@ class Modeller:
         # allProperties = Property.getAllProperties()
         # for property in allProperties:
         #     print(property)
-        numOfProperties = Property.getNumProperties()
-        print(str(numOfProperties) + " properties were allocated to categories for giving out")
-        difTotalSupply = self.totalSupply - numOfProperties
-        print(str(difTotalSupply) + " properties were not used of the total supply")
+
+        # numOfProperties = Property.getNumProperties()
+        # print(str(numOfProperties) + " properties were allocated to categories for giving out")
+        # difTotalSupply = self.totalSupply - numOfProperties
+        # print(str(difTotalSupply) + " properties were not used of the total supply")
         
         with open('data.csv', mode='w') as csv_file:
             fieldnames = ['Date', 'Queue', 'New', 'Resolved']
@@ -278,12 +331,14 @@ class Modeller:
             writer.writeheader()
 
             while self.currentDate < self.endDate:
-                self.displayCurrentDate()
+                # self.displayCurrentDate()
                 queuedApplication = Applications.getApplicationsBeforeDate(self.currentDate)
                 newApplication = Applications.getApplicationsByDate(self.currentDate)
                 # print(len(queuedApplication))
+                resolvedApplication = self.resolveApplication()
+                # resolvedApplication = 0
 
-                writer.writerow({'Date': self.currentDate, 'Queue': len(queuedApplication), 'New': len(newApplication)})
+                writer.writerow({'Date': self.currentDate, 'Queue': len(queuedApplication), 'New': len(newApplication), 'Resolved': resolvedApplication})
 
                 self.currentDate += datetime.timedelta(days=1)
 
@@ -293,6 +348,8 @@ class Modeller:
 
             # Remove the candidate and the property from their appropriate instances
         
+        # self.resolveApplication()
+
         print("Terminating Model")
         exit()
 
@@ -308,36 +365,33 @@ class Modeller:
         self.policy["TenantFinder"] = TenantFinder
         self.policy["Downsizer"] = Downsizer
         self.policy["Decants"] = Decants
+        total = PanelMoves + Homeless + SocialServicesQuota + Transfer + HomeScheme + FirstTimeApplicants + TenantFinder + Downsizer + Decants
+        self.policy["Other"] = 1 - total
 
     def assignHouseToCategory(self, BedroomSize, Category):
         total = self.supply[str(BedroomSize)]
         assignedForCategory = int(total * self.policy[Category])
 
         Property.generateProperties(BedroomSize, Category, self.currentDate, assignedForCategory)
-        
 
     def displayCurrentDate(self):
         print("The current date is:", self.currentDate)
-
-    '''
-    Returns the number of applicants waiting and assigned for the day
-    '''
-    # def dayAllocation
-
-    '''
-    Returns the number of applicants waiting and assigned for the week
-    '''
-    # def weekAllocation
-
-    '''
-    Returns the number of applicants waiting and assigned for the month
-    '''
-    # def monthAllocation
-
-    '''
-    Returns the number of applicants waiting and assigned for the quarter
-    '''
-    # def quarterAllocation
+    
+    def resolveApplication(self):
+        availableProperties = Property.getAllProperties()
+        resolvedCounter = 0
+        for property in availableProperties:
+            Category = property.getCategory()
+            Size = property.getSize()
+            print(property)
+            candidate = Applications.findPriority(Category=Category, BedroomSize=Size)
+            print(candidate)
+            if candidate is None:
+                continue
+            Property.deleteProperty(property)
+            Applications.removeApplication(candidate)
+            resolvedCounter += 1
+        return resolvedCounter
     
 
 if __name__ == "__main__":
