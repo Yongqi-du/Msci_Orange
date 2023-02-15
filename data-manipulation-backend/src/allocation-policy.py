@@ -273,7 +273,7 @@ class Modeller:
         print(str(difTotalSupply) + " properties were not used of the total supply")
         
         with open('data.csv', mode='w') as csv_file:
-            fieldnames = ['Date', 'Queue', 'New', 'Dealt']
+            fieldnames = ['Date', 'Queue', 'New', 'Resolved']
             writer = csv.DictWriter(csv_file, fieldnames = fieldnames)
             writer.writeheader()
 
