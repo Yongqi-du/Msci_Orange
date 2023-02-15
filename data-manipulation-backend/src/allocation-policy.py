@@ -31,6 +31,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import datetime
 import random
+import csv
 
 class Property:
     id_counter = 0
@@ -45,7 +46,15 @@ class Property:
         Property.instances.append(self)
 
     def __str__(self):
-        return f"PropertyID: {self.ApplicationID}, Category: {self.Category}, BedroomSize: {self.BedroomSize}, ReleaseDate: {self.ReleaseDate}"
+        return f"PropertyID: {self.PropertyID}, Category: {self.Category}, BedroomSize: {self.BedroomSize}, ReleaseDate: {self.ReleaseDate}"
+
+    @classmethod
+    def getAllProperties(cls):
+        return [properties for properties in cls.instances]
+    
+    @classmethod
+    def getNumProperties(cls):
+        return len(cls.instances)
 
     @classmethod
     def getPropertiesByRoomSize(cls, BedroomSize):
@@ -75,6 +84,14 @@ class Property:
 
         # If no matching property instance is found, return None
         return None
+    
+    @classmethod
+    def deleteProperty(cls, PropertyID):
+        for property in cls.instances:
+            if property.PropertyID == PropertyID:
+                cls.instances.remove(property)
+                return True
+        return False
 
 class Applications:
     instances = []
@@ -92,6 +109,14 @@ class Applications:
         return f"  ApplicationID: {self.ApplicationID}, Band: {self.Band}, Category: {self.Category}, BedroomSize: {self.BedroomSize}, StartDate: {self.StartDate}"
     
     @classmethod
+    def getAllApplications(cls):
+        return [applications for applications in cls.instances]
+    
+    @classmethod
+    def getNumApplications(cls):
+        return len(cls.instances)
+
+    @classmethod
     def getApplicationsByBand(cls, Band):
         return [applications for applications in cls.instances if applications.Band == Band]
     
@@ -108,6 +133,10 @@ class Applications:
         datetime_date = datetime.datetime.combine(Date, datetime.datetime.min.time())
         return [application for application in cls.instances if application.StartDate == datetime_date]
 
+    @classmethod
+    def getApplicationsBeforeDate(cls, Date):
+        datetime_date = datetime.datetime.combine(Date, datetime.datetime.min.time())
+        return [application for application in cls.instances if application.StartDate <= datetime_date]
 
     @classmethod
     def from_dataframe(cls, df):
@@ -158,6 +187,14 @@ class Applications:
         # If no priority_list is found, return None
         return None
 
+    @classmethod
+    def removeApplication(cls, ApplicationID):
+        for application in cls.instances:
+            if application.ApplicationID == ApplicationID:
+                cls.instances.remove(application)
+                return True
+        return False
+
 class Modeller:
     policy = {
         "PanelMoves": 0.02,
@@ -177,6 +214,7 @@ class Modeller:
         "3": 29,
         "4": 2
     }
+    totalSupply = sum(supply.values())
 
     def __init__(self, startDate, endDate, currentDate=None, propertyReleaseType="Randomly"):
         self.startDate = startDate
@@ -190,20 +228,70 @@ class Modeller:
         Applications.from_dataframe(self.housing_register)
 
         self.assignHouseToCategory(1, "Decants")
+        self.assignHouseToCategory(2, "Decants")
+        self.assignHouseToCategory(3, "Decants")
+        self.assignHouseToCategory(4, "Decants")
+        self.assignHouseToCategory(1, "PanelMoves")
+        self.assignHouseToCategory(2, "PanelMoves")
+        self.assignHouseToCategory(3, "PanelMoves")
+        self.assignHouseToCategory(4, "PanelMoves")
+        self.assignHouseToCategory(1, "Homeless")
+        self.assignHouseToCategory(2, "Homeless")
+        self.assignHouseToCategory(3, "Homeless")
+        self.assignHouseToCategory(4, "Homeless")
+        self.assignHouseToCategory(1, "SocialServicesQuota")
+        self.assignHouseToCategory(2, "SocialServicesQuota")
+        self.assignHouseToCategory(3, "SocialServicesQuota")
+        self.assignHouseToCategory(4, "SocialServicesQuota")
+        self.assignHouseToCategory(1, "Transfer")
+        self.assignHouseToCategory(2, "Transfer")
+        self.assignHouseToCategory(3, "Transfer")
+        self.assignHouseToCategory(4, "Transfer")
+        self.assignHouseToCategory(1, "HomeScheme")
+        self.assignHouseToCategory(2, "HomeScheme")
+        self.assignHouseToCategory(3, "HomeScheme")
+        self.assignHouseToCategory(4, "HomeScheme")
+        self.assignHouseToCategory(1, "FirstTimeApplicants")
+        self.assignHouseToCategory(2, "FirstTimeApplicants")
+        self.assignHouseToCategory(3, "FirstTimeApplicants")
+        self.assignHouseToCategory(4, "FirstTimeApplicants")
+        self.assignHouseToCategory(1, "TenantFinder")
+        self.assignHouseToCategory(2, "TenantFinder")
+        self.assignHouseToCategory(3, "TenantFinder")
+        self.assignHouseToCategory(4, "TenantFinder")
+        self.assignHouseToCategory(1, "Downsizer")
+        self.assignHouseToCategory(2, "Downsizer")
+        self.assignHouseToCategory(3, "Downsizer")
+        self.assignHouseToCategory(4, "Downsizer")
 
-        while self.currentDate < self.endDate:
-            self.displayCurrentDate()
-            # print(self.currentDate)
-            todayApplication = Applications.getApplicationsByDate(self.currentDate)
-            for application in todayApplication:
-                print(application)
-            self.currentDate += datetime.timedelta(days=1)
+        # allProperties = Property.getAllProperties()
+        # for property in allProperties:
+        #     print(property)
+        numOfProperties = Property.getNumProperties()
+        print(str(numOfProperties) + " properties were allocated to categories for giving out")
+        difTotalSupply = self.totalSupply - numOfProperties
+        print(str(difTotalSupply) + " properties were not used of the total supply")
+        
+        with open('data.csv', mode='w') as csv_file:
+            fieldnames = ['Date', 'Queue', 'New', 'Dealt']
+            writer = csv.DictWriter(csv_file, fieldnames = fieldnames)
+            writer.writeheader()
+
+            while self.currentDate < self.endDate:
+                self.displayCurrentDate()
+                queuedApplication = Applications.getApplicationsBeforeDate(self.currentDate)
+                newApplication = Applications.getApplicationsByDate(self.currentDate)
+                # print(len(queuedApplication))
+
+                writer.writerow({'Date': self.currentDate, 'Queue': len(queuedApplication), 'New': len(newApplication)})
+
+                self.currentDate += datetime.timedelta(days=1)
 
             # Check if there are property
             
             # Find the appropriate candidate
 
-            # Remove the candidate and the property from storage
+            # Remove the candidate and the property from their appropriate instances
         
         print("Terminating Model")
         exit()
