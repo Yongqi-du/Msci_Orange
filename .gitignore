@@ -24,3 +24,4 @@ amplifytools.xcconfig
 data-manipulation-backend/data/~$RBK_Housing_Register.xlsx
 data-manipulation-backend/.DS_Store
 .DS_Store
+.idea/
