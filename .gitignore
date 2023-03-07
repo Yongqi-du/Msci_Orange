@@ -1,5 +1,10 @@
 node_modules
 
+data-manipulation-backend/data/~$RBK_Housing_Register.xlsx
+data-manipulation-backend/.DS_Store
+.DS_Store
+.idea/
+
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
 amplify/.config/local-*
@@ -21,7 +26,3 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
-data-manipulation-backend/data/~$RBK_Housing_Register.xlsx
-data-manipulation-backend/.DS_Store
-.DS_Store
-.idea/
