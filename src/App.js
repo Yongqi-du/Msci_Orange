@@ -17,10 +17,14 @@ import Settings from "./components/Setting/setting";
 
 // Comment out the next 3 lines when editing locally
 import { Amplify } from 'aws-amplify';
+
+import { withAuthenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
+
 import awsExports from './aws-exports';
 Amplify.configure(awsExports);
 
-function App() {
+function App({ signOut, user }) {
 
   const [showMain, setShowMain] = useState(false)
   const [showModel, setShowModel] = useState(false)
@@ -94,7 +98,7 @@ function App() {
   );
 }
 
-export default App;
+export default withAuthenticator(App);
 
 // function First(props) {
 //   const {children, className } = props;

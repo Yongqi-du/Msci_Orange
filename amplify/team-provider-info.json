@@ -1,17 +1,4 @@
 {
-  "dev": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-msciorange-dev-150415-authRole",
-      "UnauthRoleArn": "arn:aws:iam::556592508092:role/amplify-msciorange-dev-150415-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::556592508092:role/amplify-msciorange-dev-150415-authRole",
-      "Region": "eu-west-2",
-      "DeploymentBucketName": "amplify-msciorange-dev-150415-deployment",
-      "UnauthRoleName": "amplify-msciorange-dev-150415-unauthRole",
-      "StackName": "amplify-msciorange-dev-150415",
-      "StackId": "arn:aws:cloudformation:eu-west-2:556592508092:stack/amplify-msciorange-dev-150415/34a0e040-9b2f-11ed-8099-06915cdd16ba",
-      "AmplifyAppId": "dhfab1lbxki1i"
-    }
-  },
   "msciorange": {
     "awscloudformation": {
       "AuthRoleName": "amplify-msciorange-msciorange-150706-authRole",
@@ -23,6 +10,11 @@
       "StackName": "amplify-msciorange-msciorange-150706",
       "StackId": "arn:aws:cloudformation:eu-west-2:538841638676:stack/amplify-msciorange-msciorange-150706/9abd9f80-9b2f-11ed-9043-06d68faf324e",
       "AmplifyAppId": "d2i3snsyonaedr"
+    },
+    "categories": {
+      "auth": {
+        "MsciOrange": {}
+      }
     }
   }
 }
