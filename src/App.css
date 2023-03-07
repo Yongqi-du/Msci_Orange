@@ -361,24 +361,17 @@ dot-9 {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  height: 100%;
-  overflow: hidden;
-  width: 100%;
-}
-
-@media screen and (max-width: 768px) {
-  .desktop {
-    height: auto;
-    padding: 15px;
-  }
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding: 15px;
 }
 
 @media screen and (max-width: 480px) {
   .desktop {
-    flex-direction: column;
     gap: 10px;
   }
 }
+
 
 .navbar {
   align-items: center;
