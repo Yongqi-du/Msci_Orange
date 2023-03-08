@@ -2,6 +2,9 @@ import './style.css';
 import { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
 
+import charts from './group project-6.jpg';
+import edits from './group project-9.jpg';
+
 function Modelling() {
   const chartRef = useRef(null);
 
@@ -87,7 +90,9 @@ function Modelling() {
         Allocation Policy Modelling
       </div>
       <div className='flex-row'>
-        <div ref={chartRef} style={{ width: '600px', height: '400px' }}></div>
+        <div className='chart-container'>
+          <div ref={chartRef} style={{ width: '600px', height: '400px' }}></div>
+        </div>
       </div>
       <button>Submit</button>
     </div>
