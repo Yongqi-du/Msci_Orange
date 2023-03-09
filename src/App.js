@@ -35,8 +35,11 @@ function App({ signOut, user }) {
 
   const toggleMain = () => {
     setShowMain(!showMain);
-    setShowUpload(false)
-    setShowExport(false)
+    setShowModel(false);
+    setShowUpload(false);
+    setShowExport(false);
+    setShowUser(false);
+    setShowSettings(false);
   };
 
   const toggleModel = () => {
