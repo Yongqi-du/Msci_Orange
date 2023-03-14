@@ -5,6 +5,7 @@ class Test(TestCase):
     def test_resolve_application(self):
         self.fail()
 
+
 class TestModeller(TestCase):
     def test_set_allocation_policy(self):
         self.fail()
