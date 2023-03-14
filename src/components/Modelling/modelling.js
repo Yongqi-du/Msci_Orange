@@ -177,8 +177,8 @@ function PolicyForm() {
 
     try {
       const response = await API.post(
-        "modeller-api",
-        "/python-modeller",
+        "restapimodeller",
+        "/modeller-api",
         {
           body: {outputObj}
         }

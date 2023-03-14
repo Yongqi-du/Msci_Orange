@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "paths": {
+    "/modeller-api": {
+      "name": "/modeller-api",
+      "lambdaFunction": "pythonmodeller",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "read",
+          "update"
+        ]
+      }
+    }
+  }
+}
