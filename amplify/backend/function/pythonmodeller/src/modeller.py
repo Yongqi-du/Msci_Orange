@@ -6,8 +6,8 @@ import pandas as pd
 
 import boto3
 
-from amplify.backend.function.pythonmodeller.src.applications import Applications
-from amplify.backend.function.pythonmodeller.src.property import Property
+from src.applications import Applications
+from src.property import Property
 
 
 def resolveApplication():

@@ -1,7 +1,7 @@
 import datetime
 import json
 
-from amplify.backend.function.pythonmodeller.src.modeller import Modeller
+from src.modeller import Modeller
 
 
 def handler(event, context):
