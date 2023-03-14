@@ -37,5 +37,12 @@
         "MsciOrange": {}
       }
     }
+  },
+  "frontend": {
+    "categories": {
+      "auth": {
+        "MsciOrange": {}
+      }
+    }
   }
 }
