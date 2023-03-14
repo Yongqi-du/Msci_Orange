@@ -127,10 +127,10 @@ const Modelling = () => {
         ]
       };
     return (
-      <view>
+      <View>
         <ReactEcharts option={option}/>
         <PolicyForm/>
-      </view>
+      </View>
     );
 }
 
