@@ -27,9 +27,9 @@ const dateDefaults = {
 }
 
 function Settings() {
-  const [policyInputs, setPolicyInputs] = useState(Object.values(policyDefaults));
-  const [supplyInputs, setSupplyInputs] = useState(Object.values(supplyDefaults));
-  const [dateInputs, setDateInputs] = useState(Object.values(dateDefaults));
+  const [policyInputs, setPolicyInputs] = useState(Object.values(policyDefaults).fill(["", 0]));
+  const [supplyInputs, setSupplyInputs] = useState(Object.values(supplyDefaults).fill(["", 0]));
+  const [dateInputs, setDateInputs] = useState(Object.values(dateDefaults).fill(["", ""]));
 
   const handlePolicyInputChange = (index, value) => {
     const newPolicyInputs = [...policyInputs];
