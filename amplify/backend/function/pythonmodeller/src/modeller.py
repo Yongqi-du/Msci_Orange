@@ -3,10 +3,11 @@ import datetime
 import tempfile
 
 import pandas as pd
-from src.applications import Applications
-from src.property import Property
 
 import boto3
+
+from amplify.backend.function.pythonmodeller.src.applications import Applications
+from amplify.backend.function.pythonmodeller.src.property import Property
 
 
 def resolveApplication():
