@@ -82,7 +82,7 @@ function Settings() {
   };
 
   return (
-    <div>
+    <div style="overflow:scroll;">
       <form onSubmit={handleSubmit}>
         <h2>Application Policy Inputs</h2>
         {Object.entries(policyDefaults).map(([key, value], index) => (
