@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactEcharts from 'echarts-for-react';
 
-const Export = () => {
+const Home = () => {
 
     const option = {
         title: {
@@ -30,4 +30,4 @@ const Export = () => {
 
 }
 
-export default Export;
+export default Home;

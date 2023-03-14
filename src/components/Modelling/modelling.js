@@ -1,21 +1,87 @@
-import './style.css';
+import React, { Component } from 'react';
+import ReactEcharts from 'echarts-for-react';
 
-import charts from './group project-6.jpg';
-import edits from './group project-9.jpg';
 
-function Modelling() {
+const Modelling = () => {
+    const option = {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        legend: {
+          data: ['Profit', 'Expenses', 'Income']
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: [
+          {
+            type: 'category',
+            axisTick: {
+              show: false
+            },
+            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun','Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun','Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+
+        series: [
+          {
+            name: 'Profit',
+            type: 'bar',
+            label: {
+              show: true,
+              position: 'inside'
+            },
+            emphasis: {
+              focus: 'series'
+            },
+            data: [200, 170, 240, 244, 200, 220, 210,200, 170, 240, 244, 200, 220, 210,200, 170, 240, 244, 200, 220, 210]
+          },
+
+          {
+            name: 'Income',
+            type: 'bar',
+            stack: 'Total',
+            label: {
+              show: true
+            },
+            emphasis: {
+              focus: 'series'
+            },
+            data: [320, 302, 341, 374, 390, 450, 420,320, 302, 341, 374, 390, 450, 420,320, 302, 341, 374, 390, 450, 420]
+          },
+
+          {
+            name: 'Expenses',
+            type: 'bar',
+            stack: 'Total',
+            label: {
+              show: true,
+              position: 'left'
+            },
+            emphasis: {
+              focus: 'series'
+            },
+            data: [-120, -132, -101, -134, -190, -230, -210,-120, -132, -101, -134, -190, -230, -210,-120, -132, -101, -134, -190, -230, -210,-120, -132, -101, -134, -190, -230, -210,-120, -132, -101, -134, -190, -230, -210,-120, -132, -101, -134, -190, -230, -210]
+          }
+        ]
+      };
     return (
-        <div className='flex-col'>
-            <div className='h4'>
-                Allocation Policy Modelling
-            </div>
-            <div className='flex-row'>
-                <img src={charts} alt="Charts"/>
-                <img src={edits} alt="Edit Boxes"/>
-            </div>
-            <button>Submit</button>
-        </div>
-    )
-};
+        <>
+            <ReactEcharts option={option}/>
+        </>
+    );
+}
 
 export default Modelling;
+
