@@ -6,7 +6,7 @@ import{ HashRouter } from 'react-router-dom'
 import './App.css';
 import { BrowserRouter as Router, Route,Routes } from 'react-router-dom';
 
-import BasicLayout from "./components/BasicLayout/BasicLayout";
+import BasicLayout from "./components/BasicLayout/basicLayout";
 
 // // Comment out the next 3 lines when editing locally
 import { Amplify } from 'aws-amplify';
