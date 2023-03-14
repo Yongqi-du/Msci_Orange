@@ -52,9 +52,9 @@ const dateLabelNames = {
 }
 
 function Settings() {
-  const [policyInputs, setPolicyInputs] = useState(Object.values(policyDefaults).fill( 0));
-  const [supplyInputs, setSupplyInputs] = useState(Object.values(supplyDefaults).fill(0));
-  const [dateInputs, setDateInputs] = useState(Object.values(dateDefaults).fill(""));
+  const [policyInputs, setPolicyInputs] = useState(Object.values(policyDefaults));
+  const [supplyInputs, setSupplyInputs] = useState(Object.values(supplyDefaults));
+  const [dateInputs, setDateInputs] = useState(Object.values(dateDefaults));
 
   const handlePolicyInputChange = (index, value) => {
     const newPolicyInputs = [...policyInputs];
@@ -131,9 +131,7 @@ function Settings() {
             onChange={(e) => handleDateInputChange(index, e.target.value)}
           />
         </div>
-
       ))}
-
       <button type="submit">Submit</button>
     </form>
   );
