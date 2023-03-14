@@ -16,15 +16,8 @@
       "auth": {
         "MsciOrange": {}
       },
-      "function": {
-        "pythonmodeller": {
-          "deploymentBucketName": "amplify-msciorange-frontend-151057-deployment",
-          "s3Key": "amplify-builds/pythonmodeller-47555270737479333861-build.zip"
-        }
-      },
       "api": {
-        "msciorange": {},
-        "restapimodeller": {}
+        "msciorange": {}
       }
     }
   },
