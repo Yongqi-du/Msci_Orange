@@ -2,34 +2,59 @@ import './style.css';
 import React, {useState} from "react";
 
 const policyDefaults = {
-  "PanelMoves": ["Panel Moves", 0.02],
-  "Homeless": ["Homeless", 0.04],
-  "SocialServicesQuota": ["Social Services Quota", 0.04],
-  "Transfer": ["Transfer", 0.01],
-  "HomeScheme": ["Home Scheme", 0.04],
-  "FirstTimeApplicants": ["First Time Applicants", 0.01],
-  "TenantFinder": ["TenantFinder", 0.01],
-  "Downsizer": ["Downsizer", 0.02],
-  "Decants": ["Decants", 0.8],
-  "Other": ["Other", 0.01]
+  "PanelMoves": 0.02,
+  "Homeless": 0.04,
+  "SocialServicesQuota": 0.04,
+  "Transfer": 0.01,
+  "HomeScheme": 0.04,
+  "FirstTimeApplicants": 0.01,
+  "TenantFinder":  0.01,
+  "Downsizer": 0.02,
+  "Decants": 0.8,
+  "Other": 0.01
+};
+
+const policyLabelNames = {
+  "PanelMoves": "Panel Moves",
+  "Homeless": "Homeless",
+  "SocialServicesQuota": "Social Services Quota",
+  "Transfer": "Transfer",
+  "HomeScheme": "Home Scheme",
+  "FirstTimeApplicants": "First Time Applicants",
+  "TenantFinder": "Tenant Finder",
+  "Downsizer": "Downsizer",
+  "Decants": "Decants",
+  "Other": "Other"
 };
 
 const supplyDefaults = {
-  "1": ["One Bedroom Properties", 58],
-  "2": ["Two Bedroom Properties", 53],
-  "3": ["Three Bedroom Properties", 29],
-  "4": ["Four or More Bedroom Properties", 2]
+  "1": 58,
+  "2": 53,
+  "3": 29,
+  "4": 2
 };
 
+const supplyLabelNames = {
+  "1": "One Bedroom Properties",
+  "2": "Two Bedroom Properties",
+  "3": "Three Bedroom Properties",
+  "4": "Four or More Bedroom Properties"
+}
+
 const dateDefaults = {
-  "startDate": ["Starting Date", "2022-01-01"],
-  "endDate": ["End Date", "2022-12-31"]
+  "startDate": "2022-01-01",
+  "endDate": "2022-12-31"
+}
+
+const dateLabelNames = {
+  "startDate": "Starting Date",
+  "endDate": "End Date"
 }
 
 function Settings() {
-  const [policyInputs, setPolicyInputs] = useState(Object.values(policyDefaults).fill(["", 0]));
-  const [supplyInputs, setSupplyInputs] = useState(Object.values(supplyDefaults).fill(["", 0]));
-  const [dateInputs, setDateInputs] = useState(Object.values(dateDefaults).fill(["", ""]));
+  const [policyInputs, setPolicyInputs] = useState(Object.values(policyDefaults).fill( 0));
+  const [supplyInputs, setSupplyInputs] = useState(Object.values(supplyDefaults).fill(0));
+  const [dateInputs, setDateInputs] = useState(Object.values(dateDefaults).fill(""));
 
   const handlePolicyInputChange = (index, value) => {
     const newPolicyInputs = [...policyInputs];
@@ -59,9 +84,9 @@ function Settings() {
   return (
     <form onSubmit={handleSubmit}>
       <h2>Application Policy Inputs</h2>
-      {Object.entries(policyDefaults).map(([key, [name, value]], index) => (
+      {Object.entries(policyDefaults).map(([key, value], index) => (
         <div key={index}>
-          <label htmlFor={`policy-input-${index}`}>{name}</label>
+          <label htmlFor={`policy-input-${index}`}>{policyLabelNames[key]}</label>
           <br/>
           <input
             id={`policy-input-${index}`}
@@ -70,23 +95,24 @@ function Settings() {
             max="1"
             min="0"
             name={`policy-input-${index}`}
-            value={policyInputs[index][1] || value}
+            value={policyInputs[index] || value}
             onChange={(e) => handlePolicyInputChange(index, e.target.value)}
           />
+          <label htmlFor={`policy-input-${index}`}>{value}</label>
         </div>
       ))}
 
       <h2>Property Supply Inputs</h2>
-      {Object.entries(supplyDefaults).map(([key, [name, value]], index) => (
+      {Object.entries(supplyDefaults).map(([key, value], index) => (
         <div key={index}>
-          <label htmlFor={`supply-input-${index}`}>{key}</label>
+          <label htmlFor={`supply-input-${index}`}>{supplyLabelNames[key]}</label>
           <br/>
           <input
             id={`supply-input-${index}`}
             type="number"
             step="1"
             name={`supply-input-${index}`}
-            value={supplyInputs[index][1] || value}
+            value={supplyInputs[index] || value}
             onChange={(e) => handleSupplyInputChange(index, e.target.value)}
           />
         </div>
@@ -94,15 +120,15 @@ function Settings() {
       ))}
 
       <h2>Date Inputs</h2>
-      {Object.entries(dateDefaults).map(([key, [name, value]], index) => (
+      {Object.entries(dateDefaults).map(([key,  value], index) => (
         <div key={index}>
-          <label htmlFor={`date-input-${index}`}>{name}</label>
+          <label htmlFor={`date-input-${index}`}>{dateLabelNames[key]}</label>
           <br/>
           <input
             name={`date-input-${index}`}
             id={`date-input-${index}`}
             type="date"
-            value={dateInputs[index][1] || value}
+            value={dateInputs[index] || value}
             onChange={(e) => handleDateInputChange(index, e.target.value)}
           />
         </div>
