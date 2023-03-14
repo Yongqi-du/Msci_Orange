@@ -75,6 +75,7 @@ function Settings() {
   };
 
   const handleSubmit = (e) => {
+    e.preventDefault();
     console.log("Policy Inputs: ", policyInputs);
     console.log("Supply Inputs: ", supplyInputs);
     console.log("Date Inputs: ", dateInputs);
