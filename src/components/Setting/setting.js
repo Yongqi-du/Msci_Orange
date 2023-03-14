@@ -82,61 +82,64 @@ function Settings() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Application Policy Inputs</h2>
-      {Object.entries(policyDefaults).map(([key, value], index) => (
-        <div key={index}>
-          <label htmlFor={`policy-input-${index}`}>{policyLabelNames[key]}</label>
-          <br/>
-          <input
-            id={`policy-input-${index}`}
-            type="range"
-            step="0.01"
-            max="1"
-            min="0"
-            name={`policy-input-${index}`}
-            value={policyInputs[index] || value}
-            onChange={(e) => handlePolicyInputChange(index, e.target.value)}
-          />
-          <label htmlFor={`policy-input-${index}`}>{value}</label>
-        </div>
-      ))}
+    <div>
+      <form onSubmit={handleSubmit}>
+        <h2>Application Policy Inputs</h2>
+        {Object.entries(policyDefaults).map(([key, value], index) => (
+          <div key={index}>
+            <label htmlFor={`policy-input-${index}`}>{policyLabelNames[key]}</label>
+            <br/>
+            <input
+              id={`policy-input-${index}`}
+              type="range"
+              step="0.01"
+              max="1"
+              min="0"
+              name={`policy-input-${index}`}
+              value={policyInputs[index] || value}
+              onChange={(e) => handlePolicyInputChange(index, e.target.value)}
+            />
+            <label htmlFor={`policy-input-${index}`}>{policyInputs[index]}</label>
+          </div>
+        ))}
 
-      <h2>Property Supply Inputs</h2>
-      {Object.entries(supplyDefaults).map(([key, value], index) => (
-        <div key={index}>
-          <label htmlFor={`supply-input-${index}`}>{supplyLabelNames[key]}</label>
-          <br/>
-          <input
-            id={`supply-input-${index}`}
-            type="number"
-            step="1"
-            name={`supply-input-${index}`}
-            value={supplyInputs[index] || value}
-            onChange={(e) => handleSupplyInputChange(index, e.target.value)}
-          />
-        </div>
+        <h2>Property Supply Inputs</h2>
+        {Object.entries(supplyDefaults).map(([key, value], index) => (
+          <div key={index}>
+            <label htmlFor={`supply-input-${index}`}>{supplyLabelNames[key]}</label>
+            <br/>
+            <input
+              id={`supply-input-${index}`}
+              type="number"
+              step="1"
+              name={`supply-input-${index}`}
+              value={supplyInputs[index] || value}
+              onChange={(e) => handleSupplyInputChange(index, e.target.value)}
+            />
+          </div>
 
-      ))}
+        ))}
 
-      <h2>Date Inputs</h2>
-      {Object.entries(dateDefaults).map(([key,  value], index) => (
-        <div key={index}>
-          <label htmlFor={`date-input-${index}`}>{dateLabelNames[key]}</label>
-          <br/>
-          <input
-            name={`date-input-${index}`}
-            id={`date-input-${index}`}
-            type="date"
-            value={dateInputs[index] || value}
-            onChange={(e) => handleDateInputChange(index, e.target.value)}
-          />
-        </div>
+        <h2>Date Inputs</h2>
+        {Object.entries(dateDefaults).map(([key,  value], index) => (
+          <div key={index}>
+            <label htmlFor={`date-input-${index}`}>{dateLabelNames[key]}</label>
+            <br/>
+            <input
+              name={`date-input-${index}`}
+              id={`date-input-${index}`}
+              type="date"
+              value={dateInputs[index] || value}
+              onChange={(e) => handleDateInputChange(index, e.target.value)}
+            />
+          </div>
 
-      ))}
+        ))}
 
-      <button type="submit">Submit</button>
-    </form>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+
   );
 }
 
