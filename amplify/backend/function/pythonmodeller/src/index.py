@@ -1,7 +1,7 @@
 import datetime
 import json
 
-from src.modeller import Modeller
+from modeller import Modeller
 
 
 def handler(event, context):
