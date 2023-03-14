@@ -6,8 +6,8 @@ import pandas as pd
 
 import boto3
 
-from src.applications import Applications
-from src.property import Property
+from applications import Applications
+from property import Property
 
 
 def resolveApplication():

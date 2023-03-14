@@ -19,7 +19,7 @@
       "function": {
         "pythonmodeller": {
           "deploymentBucketName": "amplify-msciorange-frontend-151057-deployment",
-          "s3Key": "amplify-builds/pythonmodeller-617a543173664f772f56-build.zip"
+          "s3Key": "amplify-builds/pythonmodeller-77497a67446c754a316a-build.zip"
         }
       },
       "api": {
