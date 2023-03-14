@@ -1,6 +1,7 @@
 import React, {Component, useState} from 'react';
 import ReactEcharts from 'echarts-for-react';
 import {View} from "@aws-amplify/ui-react";
+import {API} from "aws-amplify";
 
 const policyDefaults = {
   "PanelMoves": 0.02,
@@ -159,7 +160,7 @@ function PolicyForm() {
     setDateInputs(newDateInputs);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let outputObj = {
       "policy": {},
@@ -174,6 +175,18 @@ function PolicyForm() {
     outputObj["startDate"] = dateInputs[0];
     outputObj["endDate"] = dateInputs[1];
 
+    try {
+      const response = await API.post(
+        "modeller-api",
+        "/python-modeller",
+        {
+          body: {outputObj}
+        }
+      );
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
     console.log(outputObj);
   };
 
@@ -229,7 +242,8 @@ function PolicyForm() {
           />
         </div>
       ))}
-      <button type="submit">Submit</button>
+      <br/>
+      <button type="submit" id="policy-form-submit">Submit</button>
     </form>
   );
 }
