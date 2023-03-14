@@ -99,7 +99,7 @@ function Settings() {
               value={policyInputs[index] || value}
               onChange={(e) => handlePolicyInputChange(index, e.target.value)}
             />
-            <label htmlFor={`policy-input-${index}`}>{policyInputs[index]}</label>
+            <label htmlFor={`policy-input-${index}`}>{policyInputs[index] || value}</label>
           </div>
         ))}
 
