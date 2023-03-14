@@ -9,7 +9,7 @@ import {
 } from '@ant-design/icons';
 import {  Link } from 'react-router-dom';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Export from '../Export/Export';
+import Export from '../Export/export';
 import FileUpload from '../FileUpload/FileUpload';
 import Home from '../Home/Home';
 import Modelling from '../Modelling/Modelling';
