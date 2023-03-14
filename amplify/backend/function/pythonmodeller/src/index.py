@@ -1,15 +1,38 @@
+import datetime
 import json
 
+from amplify.backend.function.pythonmodeller.src.modeller import Modeller
+
+
 def handler(event, context):
-  print('received event:')
-  print(event)
-  
-  return {
-      'statusCode': 200,
-      'headers': {
-          'Access-Control-Allow-Headers': '*',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
-      },
-      'body': json.dumps('Hello from your new Amplify Python lambda!')
-  }
+    policy = event.get("policy")
+    supply = event.get("supply")
+    startDate = event.get("startDate")
+    endDate = event.get("endDate")
+    missing_data = []
+
+    if policy is None:
+        missing_data.append("policy")
+    if supply is None:
+        missing_data.append("supply")
+    if startDate is None:
+        missing_data.append("startDate")
+    if endDate is None:
+        missing_data.append("endDate")
+
+    if len(missing_data) > 0:
+        message = "Missing " + ", ".join(missing_data) + " data in event"
+        return {
+            'statusCode': 200,
+            'body': json.dumps(message)
+        }
+
+    startDate = datetime.datetime.strptime(startDate, '%Y-%m-%d').date()
+    endDate = datetime.datetime.strptime(endDate, '%Y-%m-%d').date()
+
+    modeller = Modeller(startDate=startDate, endDate=endDate, policy=policy, supply=supply)
+
+    return {
+        'statusCode': 200,
+        'body': json.dumps("Run complete")
+    }

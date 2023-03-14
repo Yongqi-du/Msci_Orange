@@ -1,9 +1,12 @@
 import csv
 import datetime
+import tempfile
 
 import pandas as pd
-from applications import Applications
-from property import Property
+from src.applications import Applications
+from src.property import Property
+
+import boto3
 
 
 def resolveApplication():
@@ -12,9 +15,9 @@ def resolveApplication():
     for prop in availableProperties:
         Category = prop.getCategory()
         Size = prop.getSize()
-        print(prop)
+        # print(prop)
         candidate = Applications.findPriority(Category=Category, BedroomSize=Size)
-        print(candidate)
+        # print(candidate)
         if candidate is None:
             continue
         Property.deleteProperty(prop)
@@ -24,35 +27,45 @@ def resolveApplication():
 
 
 class Modeller:
-    policy = {
-        "PanelMoves": 0.02,
-        "Homeless": 0.04,
-        "SocialServicesQuota": 0.04,
-        "Transfer": 0.01,
-        "HomeScheme": 0.04,
-        "FirstTimeApplicants": 0.01,
-        "TenantFinder": 0.01,
-        "Downsizer": 0.02,
-        "Decants": 0.8,
-        "Other": 0.01
-    }
 
-    supply = {
-        "1": 58,
-        "2": 53,
-        "3": 29,
-        "4": 2
-    }
-    totalSupply = sum(supply.values())
+    def __init__(self, startDate, endDate, currentDate=None, propertyReleaseType="Randomly", policy=None, supply=None):
+        self.policy = policy if policy is not None else {
+            "PanelMoves": 0.02,
+            "Homeless": 0.04,
+            "SocialServicesQuota": 0.04,
+            "Transfer": 0.01,
+            "HomeScheme": 0.04,
+            "FirstTimeApplicants": 0.01,
+            "TenantFinder": 0.01,
+            "Downsizer": 0.02,
+            "Decants": 0.8,
+            "Other": 0.01
+        }
 
-    def __init__(self, startDate, endDate, currentDate=None, propertyReleaseType="Randomly"):
+        self.supply = supply if supply is not None else {
+            "1": 58,
+            "2": 53,
+            "3": 29,
+            "4": 2
+        }
+        totalSupply = sum(supply.values())
+
         self.startDate = startDate
         self.endDate = endDate
         self.currentDate = currentDate if currentDate is not None else startDate
         self.propertyReleaseType = propertyReleaseType
 
-        self.housing_stock = pd.read_excel("../data/HRA_stock.xlsx", engine="openpyxl")
-        self.housing_register = pd.read_excel("../data/RBK_Housing_Register.xlsx", engine="openpyxl")
+        # self.housing_stock = pd.read_excel("../data/HRA_stock.xlsx", engine="openpyxl")
+        # self.housing_register = pd.read_excel("../data/RBK_Housing_Register.xlsx", engine="openpyxl")
+        dynamodb = boto3.resource('dynamodb', region_name='eu-west-2')
+        rbk_housing_table = dynamodb.Table('rbkhousingtable')
+
+        response = rbk_housing_table.scan()
+        items = response['Items']
+
+        rbkHousing = pd.DataFrame(items)
+        rbkHousing.dropna(inplace=True)
+        self.housing_register = rbkHousing
 
         Applications.from_dataframe(self.housing_register)
 
@@ -102,34 +115,35 @@ class Modeller:
         # difTotalSupply = self.totalSupply - numOfProperties
         # print(str(difTotalSupply) + " properties were not used of the total supply")
 
-        with open('data.csv', mode='w') as csv_file:
-            fieldnames = ['Date', 'Queue', 'New', 'Resolved']
-            writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-            writer.writeheader()
+        data = []
+        fieldnames = ['ID', 'Date', 'Queue', 'New', 'Resolved']
+        id_counter = 0
 
-            while self.currentDate < self.endDate:
-                # self.displayCurrentDate()
-                queuedApplication = Applications.getApplicationsBeforeDate(self.currentDate)
-                newApplication = Applications.getApplicationsByDate(self.currentDate)
-                # print(len(queuedApplication))
-                resolvedApplication = resolveApplication()
-                # resolvedApplication = 0
+        while self.currentDate < self.endDate:
+            queuedApplication = Applications.getApplicationsBeforeDate(self.currentDate)
+            newApplication = Applications.getApplicationsByDate(self.currentDate)
+            resolvedApplication = resolveApplication()
 
-                writer.writerow({'Date': self.currentDate, 'Queue': len(queuedApplication), 'New': len(newApplication),
-                                 'Resolved': resolvedApplication})
+            # Convert date to string using isoformat()
+            date_str = self.currentDate.isoformat()
 
-                self.currentDate += datetime.timedelta(days=1)
+            # Add ID to the item dictionary
+            item = {'ID': str(id_counter), 'Date': date_str, 'Queue': len(queuedApplication),
+                    'New': len(newApplication),
+                    'Resolved': resolvedApplication}
 
-            # Check if there are property
+            data.append(item)
+            id_counter += 1
+            currentDate_date = datetime.date(self.currentDate.year, self.currentDate.month, self.currentDate.day)
+            Applications.updateWaitingTime(currentDate_date)
+            self.currentDate += datetime.timedelta(days=1)
 
-            # Find the appropriate candidate
+        # Add the data to the DynamoDB table
+        self.saveToDynamoDB(data)
 
-            # Remove the candidate and the property from their appropriate instances
-
-        # self.resolveApplication()
+        df = pd.DataFrame(data, columns=fieldnames)
 
         print("Terminating Model")
-        exit()
 
     def setAllocationPolicy(self, PanelMoves, Homeless, SocialServicesQuota, Transfer, HomeScheme, FirstTimeApplicants,
                             TenantFinder, Downsizer, Decants):
@@ -144,7 +158,7 @@ class Modeller:
         self.policy["Downsizer"] = Downsizer
         self.policy["Decants"] = Decants
         total = PanelMoves + Homeless + SocialServicesQuota + Transfer + HomeScheme + FirstTimeApplicants + \
-            TenantFinder + Downsizer + Decants
+                TenantFinder + Downsizer + Decants
         self.policy["Other"] = 1 - total
 
     def assignHouseToCategory(self, BedroomSize, Category):
@@ -156,6 +170,20 @@ class Modeller:
     def displayCurrentDate(self):
         print("The current date is:", self.currentDate)
 
+    def saveToDynamoDB(self, data):
+        dynamodb = boto3.resource('dynamodb', region_name='eu-west-2')
+        csv_table = dynamodb.Table('ModellerCSV')
+        for item in data:
+            csv_table.put_item(Item=item)
+        print("Wait Time: " + str(Applications.getAverageWaitingTime()))
+        simulation_data_table = dynamodb.Table('SimulationData-knysgdi44vfgzcpw5osxnn6q7e-msciorange')
+        simulation_result = {"id": "1", "Average Waiting Time": str(Applications.getAverageWaitingTime())}
+        simulation_data_table.put_item(Item=simulation_result)
+
+
+# from wsgiref.simple_server import make_server
 
 if __name__ == "__main__":
     modeller = Modeller(startDate=datetime.date(2022, 1, 1), endDate=datetime.date(2022, 12, 31))
+    # modeller.saveToDynamoDB()
+    # print(rbkHousing)

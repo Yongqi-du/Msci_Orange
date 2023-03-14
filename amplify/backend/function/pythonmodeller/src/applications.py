@@ -11,7 +11,7 @@ class Applications:
         self.Band = Band
         self.Category = Category
         self.BedroomSize = BedroomSize
-        self.StartDate = StartDate
+        self.StartDate = datetime.datetime.strptime(StartDate, '%Y-%m-%d %H:%M:%S')
         self.WaitTime = 0
         Applications.instances.append(self)
 
@@ -92,9 +92,12 @@ class Applications:
                 Category = "PanelMoves"
             else:
                 Category = "Other"
-            BedroomSize = int(row.get('Bedroom', 1))
-            StartDate = row['BandStartDate']
-            cls(ID, Band, Category, BedroomSize, StartDate)
+            BedroomSize = int(row.get('Bedroom', 1) or 1)
+            StartDateRaw = row['BandStartDate'][:19]
+            # print(StartDateRaw)
+            StartDate = datetime.datetime.strptime(StartDateRaw, '%Y-%m-%d %H:%M:%S').date()
+            StartDate_str = StartDate.strftime('%Y-%m-%d %H:%M:%S')
+            cls(ID, Band, Category, BedroomSize, StartDate_str)
 
     @classmethod
     def getApplicationsBySizeAndCategory(cls, BedroomSize, Category):
@@ -149,3 +152,21 @@ class Applications:
     def removeApplication(cls, instance):
         if instance in cls.instances:
             cls.instances.remove(instance)
+
+    @classmethod
+    def updateWaitingTime(cls, currentDate):
+        for application in cls.instances:
+            currentDate_date = datetime.date(currentDate.year, currentDate.month, currentDate.day)
+            startDate_date = datetime.date(application.StartDate.year, application.StartDate.month,
+                                           application.StartDate.day)
+            application.WaitTime = (currentDate_date - startDate_date).days
+
+    @classmethod
+    def getAverageWaitingTime(cls):
+        waiting_times = []
+        for application in cls.instances:
+            waiting_times.append(application.WaitTime)
+        if len(waiting_times) > 0:
+            return sum(waiting_times) / len(waiting_times)
+        else:
+            return 0

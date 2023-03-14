@@ -79,5 +79,23 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     }
+  },
+  "parameters": {
+    "AMPLIFY_function_pythonmodeller_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "pythonmodeller"
+        }
+      ]
+    },
+    "AMPLIFY_function_pythonmodeller_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "pythonmodeller"
+        }
+      ]
+    }
   }
 }
