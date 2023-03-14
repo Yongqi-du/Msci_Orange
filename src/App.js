@@ -13,6 +13,16 @@ import BasicLayout from "./components/BasicLayout/BasicLayout";
 import Modelling from './components/Modelling/Modelling';
 import User from './components/User/User';
 
+// // Comment out the next 3 lines when editing locally
+import { Amplify } from 'aws-amplify';
+
+import { withAuthenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
+
+import awsExports from './aws-exports';
+Amplify.configure(awsExports);
+
+
 function App(){
     
   return(
@@ -28,7 +38,7 @@ function App(){
 }
 
 
-export default App;
+export default withAuthenticator(App);
 
 
 
