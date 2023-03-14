@@ -1,6 +1,56 @@
-import React, { Component } from 'react';
+import React, {Component, useState} from 'react';
 import ReactEcharts from 'echarts-for-react';
+import {View} from "@aws-amplify/ui-react";
 
+const policyDefaults = {
+  "PanelMoves": 0.02,
+  "Homeless": 0.04,
+  "SocialServicesQuota": 0.04,
+  "Transfer": 0.01,
+  "HomeScheme": 0.04,
+  "FirstTimeApplicants": 0.01,
+  "TenantFinder":  0.01,
+  "Downsizer": 0.02,
+  "Decants": 0.8,
+  "Other": 0.01
+};
+
+const policyLabelNames = {
+  "PanelMoves": "Panel Moves",
+  "Homeless": "Homeless",
+  "SocialServicesQuota": "Social Services Quota",
+  "Transfer": "Transfer",
+  "HomeScheme": "Home Scheme",
+  "FirstTimeApplicants": "First Time Applicants",
+  "TenantFinder": "Tenant Finder",
+  "Downsizer": "Downsizer",
+  "Decants": "Decants",
+  "Other": "Other"
+};
+
+const supplyDefaults = {
+  "1": 58,
+  "2": 53,
+  "3": 29,
+  "4": 2
+};
+
+const supplyLabelNames = {
+  "1": "One Bedroom Properties",
+  "2": "Two Bedroom Properties",
+  "3": "Three Bedroom Properties",
+  "4": "Four or More Bedroom Properties"
+}
+
+const dateDefaults = {
+  "startDate": "2022-01-01",
+  "endDate": "2022-12-31"
+}
+
+const dateLabelNames = {
+  "startDate": "Starting Date",
+  "endDate": "End Date"
+}
 
 const Modelling = () => {
     const option = {
@@ -77,60 +127,11 @@ const Modelling = () => {
         ]
       };
     return (
-        <>
-            <ReactEcharts option={option}/>
-        </>
+      <view>
+        <ReactEcharts option={option}/>
+        <PolicyForm/>
+      </view>
     );
-}
-
-const policyDefaults = {
-  "PanelMoves": 0.02,
-  "Homeless": 0.04,
-  "SocialServicesQuota": 0.04,
-  "Transfer": 0.01,
-  "HomeScheme": 0.04,
-  "FirstTimeApplicants": 0.01,
-  "TenantFinder":  0.01,
-  "Downsizer": 0.02,
-  "Decants": 0.8,
-  "Other": 0.01
-};
-
-const policyLabelNames = {
-  "PanelMoves": "Panel Moves",
-  "Homeless": "Homeless",
-  "SocialServicesQuota": "Social Services Quota",
-  "Transfer": "Transfer",
-  "HomeScheme": "Home Scheme",
-  "FirstTimeApplicants": "First Time Applicants",
-  "TenantFinder": "Tenant Finder",
-  "Downsizer": "Downsizer",
-  "Decants": "Decants",
-  "Other": "Other"
-};
-
-const supplyDefaults = {
-  "1": 58,
-  "2": 53,
-  "3": 29,
-  "4": 2
-};
-
-const supplyLabelNames = {
-  "1": "One Bedroom Properties",
-  "2": "Two Bedroom Properties",
-  "3": "Three Bedroom Properties",
-  "4": "Four or More Bedroom Properties"
-}
-
-const dateDefaults = {
-  "startDate": "2022-01-01",
-  "endDate": "2022-12-31"
-}
-
-const dateLabelNames = {
-  "startDate": "Starting Date",
-  "endDate": "End Date"
 }
 
 function PolicyForm() {
@@ -142,12 +143,14 @@ function PolicyForm() {
     const newPolicyInputs = [...policyInputs];
     newPolicyInputs[index] = parseFloat(value);
     setPolicyInputs(newPolicyInputs);
+    policyDefaults[index] = newPolicyInputs[index];
   };
 
   const handleSupplyInputChange = (index, value) => {
     const newSupplyInputs = [...supplyInputs];
     newSupplyInputs[index] = parseInt(value);
     setSupplyInputs(newSupplyInputs);
+    supplyDefaults[index] = newSupplyInputs[index];
   };
 
   const handleDateInputChange = (index, value) => {
@@ -161,14 +164,17 @@ function PolicyForm() {
     let outputObj = {
       "policy": {},
       "supply": {},
-      "startDate": {},
-      "endDate": {}
+      "startDate": "",
+      "endDate": ""
     };
 
+    outputObj["policy"] = policyDefaults;
+    outputObj["supply"] = supplyDefaults;
 
-    console.log("Policy Inputs: ", policyInputs);
-    console.log("Supply Inputs: ", supplyInputs);
-    console.log("Date Inputs: ", dateInputs);
+    outputObj["startDate"] = dateInputs[0];
+    outputObj["endDate"] = dateInputs[1];
+
+    console.log(outputObj);
   };
 
   return (
@@ -228,7 +234,5 @@ function PolicyForm() {
   );
 }
 
-export default PolicyForm;
-
-// export default Modelling;
+export default Modelling;
 
