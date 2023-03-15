@@ -1,4 +1,22 @@
 {
+  "backend": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-msciorange-backend-162440-authRole",
+      "UnauthRoleArn": "arn:aws:iam::538841638676:role/amplify-msciorange-backend-162440-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::538841638676:role/amplify-msciorange-backend-162440-authRole",
+      "Region": "eu-west-2",
+      "DeploymentBucketName": "amplify-msciorange-backend-162440-deployment",
+      "UnauthRoleName": "amplify-msciorange-backend-162440-unauthRole",
+      "StackName": "amplify-msciorange-backend-162440",
+      "StackId": "arn:aws:cloudformation:eu-west-2:538841638676:stack/amplify-msciorange-backend-162440/b8b821a0-c284-11ed-892e-02154606118a",
+      "AmplifyAppId": "d2i3snsyonaedr"
+    },
+    "categories": {
+      "auth": {
+        "MsciOrange": {}
+      }
+    }
+  },
   "msciorange": {
     "awscloudformation": {
       "AuthRoleName": "amplify-msciorange-msciorange-150706-authRole",

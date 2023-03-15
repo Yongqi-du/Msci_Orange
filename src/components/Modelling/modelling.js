@@ -11,7 +11,7 @@ const Modelling = () => {
           }
         },
         legend: {
-          data: ['Profit', 'Expenses', 'Income']
+          data: ['New', 'Queued', 'Resolved']
         },
         grid: {
           left: '3%',
@@ -25,7 +25,7 @@ const Modelling = () => {
             axisTick: {
               show: false
             },
-            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun','Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun','Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            data: ['2022-01-01', '2022-01-02', '2022-01-03', '2022-01-04', '2022-01-05', '2022-01-06', '2022-01-07', '2022-01-08', '2022-01-09', '2022-01-10', '2022-01-11', '2022-01-12', '2022-01-13', '2022-01-14', '2022-01-15', '2022-01-16', '2022-01-17', '2022-01-18', '2022-01-19', '2022-01-20', '2022-01-21']
           }
         ],
         yAxis: [
@@ -36,7 +36,7 @@ const Modelling = () => {
 
         series: [
           {
-            name: 'Profit',
+            name: 'New',
             type: 'bar',
             label: {
               show: true,
@@ -49,7 +49,7 @@ const Modelling = () => {
           },
 
           {
-            name: 'Income',
+            name: 'Resolved',
             type: 'bar',
             stack: 'Total',
             label: {
@@ -62,7 +62,7 @@ const Modelling = () => {
           },
 
           {
-            name: 'Expenses',
+            name: 'Queued',
             type: 'bar',
             stack: 'Total',
             label: {
