@@ -2,6 +2,7 @@ import React, {Component, useState} from 'react';
 import ReactEcharts from 'echarts-for-react';
 import {View} from "@aws-amplify/ui-react";
 import {API} from "aws-amplify";
+import './Modelling.css'
 
 const policyDefaults = {
   "PanelMoves": 0.02,
@@ -193,62 +194,71 @@ function PolicyForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="form-container">
+    <div className="form-column">
       <h2>Application Policy Inputs</h2>
       {Object.entries(policyDefaults).map(([key, value], index) => (
-      <div key={`policy-input-${key}-${index}`}>
-        <label htmlFor={`policy-input-${key}-${index}`}>{policyLabelNames[key]}</label>
-        <br/>
-        <input
-          id={`policy-input-${key}-${index}`}
-          type="range"
-          step="0.01"
-          max="1"
-          min="0"
-          name={`policy-input-${key}-${index}`}
-          value={policyInputs[index] || value}
-          onChange={(e) => handlePolicyInputChange(index, e.target.value)}
-        />
-        <label htmlFor={`policy-input-${key}-${index}`}>{policyInputs[index] || value}</label>
-      </div>      
-    ))}
-
-
-
+        <div className="input-group" key={`policy-input-${key}-${index}`}>
+          <label htmlFor={`policy-input-${key}-${index}`}>{policyLabelNames[key]}</label>
+          <br />
+          <input
+            id={`policy-input-${key}-${index}`}
+            className="range-input"
+            type="range"
+            step="0.01"
+            max="1"
+            min="0"
+            name={`policy-input-${key}-${index}`}
+            value={policyInputs[index] || value}
+            onChange={(e) => handlePolicyInputChange(index, e.target.value)}
+            style={{ width: "100px" }}
+          />
+          <br />
+          <span className="range-value">{policyInputs[index] || value}</span>
+        </div>      
+      ))}
+    </div>
+  
+    <div className="form-column">
       <h2>Property Supply Inputs</h2>
       {Object.entries(supplyDefaults).map(([key, value], index) => (
-        <div key={index}>
-          <label htmlFor={`supply-input-${index}`}>{supplyLabelNames[key]}</label>
-          <br/>
+        <div className="input-group" key={`supply-input-${key}-${index}`}>
+          <label htmlFor={`supply-input-${key}-${index}`}>{supplyLabelNames[key]}</label>
           <input
-            id={`supply-input-${index}`}
+            id={`supply-input-${key}-${index}`}
+            className="number-input"
             type="number"
             step="1"
-            name={`supply-input-${index}`}
+            name={`supply-input-${key}-${index}`}
             value={supplyInputs[index] || value}
             onChange={(e) => handleSupplyInputChange(index, e.target.value)}
           />
         </div>
-
       ))}
-
+    </div>
+  
+    <div className="form-column">
       <h2>Date Inputs</h2>
-      {Object.entries(dateDefaults).map(([key,  value], index) => (
-        <div key={index}>
-          <label htmlFor={`date-input-${index}`}>{dateLabelNames[key]}</label>
-          <br/>
+      {Object.entries(dateDefaults).map(([key, value], index) => (
+        <div className="input-group" key={`date-input-${key}-${index}`}>
+          <label htmlFor={`date-input-${key}-${index}`}>{dateLabelNames[key]}</label>
           <input
-            name={`date-input-${index}`}
-            id={`date-input-${index}`}
+            id={`date-input-${key}-${index}`}
+            className="date-input"
             type="date"
+            name={`date-input-${key}-${index}`}
             value={dateInputs[index] || value}
             onChange={(e) => handleDateInputChange(index, e.target.value)}
           />
         </div>
       ))}
-      <br/>
-      <button type="submit" id="policy-form-submit">Submit</button>
-    </form>
+    </div>
+    
+    <div className="submit-container">
+      <button className="submit-button" type="submit">Submit</button>
+    </div>
+  </form>
+
   );
 }
 
