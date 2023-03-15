@@ -45,8 +45,8 @@ const FileUpload = () => {
     process.env.AWS_SDK_LOAD_CONFIG = 1;
     const s3 = new AWS.S3({
       region: process.env.REACT_APP_AWS_REGION,
-      accessKeyId: 'AKIAX25LW44KHSSXYMHS',//process.env.REACT_APP_AWS_ACCESS_KEY_ID,
-      secretAccessKey: '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',//process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
+      accessKeyId: "teset",//'AKIAX25LW44KHSSXYMHS',//process.env.REACT_APP_AWS_ACCESS_KEY_ID,
+      secretAccessKey: "test",//'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',//process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
     });
   
     const fileName = file.name;
