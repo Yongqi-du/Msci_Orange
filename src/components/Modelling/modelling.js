@@ -148,14 +148,14 @@ function PolicyForm() {
     const key = Object.keys(policyDefaults)[index];
     policyDefaults[key] = newPolicyInputs[index];
   };
-  
 
-  const handleSupplyInputChange = (index, value) => {
-    const newSupplyInputs = [...supplyInputs];
-    newSupplyInputs[index] = parseInt(value);
+  const handleSupplyInputChange = (key, value) => {
+    const newSupplyInputs = {...supplyInputs};
+    newSupplyInputs[key] = parseInt(value);
     setSupplyInputs(newSupplyInputs);
-    supplyDefaults[index] = newSupplyInputs[index];
+    supplyDefaults[key] = newSupplyInputs[key];
   };
+  
 
   const handleDateInputChange = (index, value) => {
     const newDateInputs = [...dateInputs];
@@ -230,8 +230,8 @@ function PolicyForm() {
             type="number"
             step="1"
             name={`supply-input-${key}-${index}`}
-            value={supplyInputs[index] || value}
-            onChange={(e) => handleSupplyInputChange(index, e.target.value)}
+            value={supplyInputs[key] || value}
+            onChange={(e) => handleSupplyInputChange(key, e.target.value)}
           />
         </div>
       ))}
