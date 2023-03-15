@@ -1,23 +1,19 @@
 {
-  "frontend": {
+  "backend": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-msciorange-frontend-151057-authRole",
-      "UnauthRoleArn": "arn:aws:iam::538841638676:role/amplify-msciorange-frontend-151057-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::538841638676:role/amplify-msciorange-frontend-151057-authRole",
+      "AuthRoleName": "amplify-msciorange-backend-162440-authRole",
+      "UnauthRoleArn": "arn:aws:iam::538841638676:role/amplify-msciorange-backend-162440-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::538841638676:role/amplify-msciorange-backend-162440-authRole",
       "Region": "eu-west-2",
-      "DeploymentBucketName": "amplify-msciorange-frontend-151057-deployment",
-      "UnauthRoleName": "amplify-msciorange-frontend-151057-unauthRole",
-      "StackName": "amplify-msciorange-frontend-151057",
-      "StackId": "arn:aws:cloudformation:eu-west-2:538841638676:stack/amplify-msciorange-frontend-151057/6c1f4260-c27a-11ed-ab5a-02797f609212",
-      "AmplifyAppId": "d2i3snsyonaedr",
-      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-msciorange-frontend-151057-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
+      "DeploymentBucketName": "amplify-msciorange-backend-162440-deployment",
+      "UnauthRoleName": "amplify-msciorange-backend-162440-unauthRole",
+      "StackName": "amplify-msciorange-backend-162440",
+      "StackId": "arn:aws:cloudformation:eu-west-2:538841638676:stack/amplify-msciorange-backend-162440/b8b821a0-c284-11ed-892e-02154606118a",
+      "AmplifyAppId": "d2i3snsyonaedr"
     },
     "categories": {
       "auth": {
         "MsciOrange": {}
-      },
-      "api": {
-        "msciorange": {}
       }
     }
   },
@@ -42,18 +38,27 @@
       }
     }
   },
-  "dev": {
+
+  "userenv": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-msciorange-dev-192557-authRole",
-      "UnauthRoleArn": "arn:aws:iam::538841638676:role/amplify-msciorange-dev-192557-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::538841638676:role/amplify-msciorange-dev-192557-authRole",
+      "AuthRoleName": "amplify-msciorange-userenv-193311-authRole",
+      "UnauthRoleArn": "arn:aws:iam::538841638676:role/amplify-msciorange-userenv-193311-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::538841638676:role/amplify-msciorange-userenv-193311-authRole",
       "Region": "eu-west-2",
-      "DeploymentBucketName": "amplify-msciorange-dev-192557-deployment",
-      "UnauthRoleName": "amplify-msciorange-dev-192557-unauthRole",
-      "StackName": "amplify-msciorange-dev-192557",
-      "StackId": "arn:aws:cloudformation:eu-west-2:538841638676:stack/amplify-msciorange-dev-192557/0b75e350-c29e-11ed-93d5-027a40638f30",
+      "DeploymentBucketName": "amplify-msciorange-userenv-193311-deployment",
+      "UnauthRoleName": "amplify-msciorange-userenv-193311-unauthRole",
+      "StackName": "amplify-msciorange-userenv-193311",
+      "StackId": "arn:aws:cloudformation:eu-west-2:538841638676:stack/amplify-msciorange-userenv-193311/1034ae70-c29f-11ed-b723-0ae36c4f8bfe",
       "AmplifyAppId": "d2i3snsyonaedr"
     },
+    "categories": {
+      "auth": {
+        "MsciOrange": {}
+      }
+    }
+
+  },
+  "frontend": {
     "categories": {
       "auth": {
         "MsciOrange": {}
