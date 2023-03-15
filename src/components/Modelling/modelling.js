@@ -136,16 +136,18 @@ const Modelling = () => {
 }
 
 function PolicyForm() {
-  const [policyInputs, setPolicyInputs] = useState(Object.values(policyDefaults));
-  const [supplyInputs, setSupplyInputs] = useState(Object.values(supplyDefaults));
-  const [dateInputs, setDateInputs] = useState(Object.values(dateDefaults));
+  const [policyInputs, setPolicyInputs] = useState(Object.entries(policyDefaults).map(([_, value]) => value));
+  const [supplyInputs, setSupplyInputs] = useState(Object.entries(supplyDefaults).map(([_, value]) => value));
+  const [dateInputs, setDateInputs] = useState(Object.entries(dateDefaults).map(([_, value]) => value));
 
   const handlePolicyInputChange = (index, value) => {
     const newPolicyInputs = [...policyInputs];
     newPolicyInputs[index] = parseFloat(value);
     setPolicyInputs(newPolicyInputs);
-    policyDefaults[index] = newPolicyInputs[index];
+    const key = Object.keys(policyDefaults)[index];
+    policyDefaults[key] = newPolicyInputs[index];
   };
+  
 
   const handleSupplyInputChange = (index, value) => {
     const newSupplyInputs = [...supplyInputs];
@@ -194,22 +196,24 @@ function PolicyForm() {
     <form onSubmit={handleSubmit}>
       <h2>Application Policy Inputs</h2>
       {Object.entries(policyDefaults).map(([key, value], index) => (
-        <div key={index}>
-          <label htmlFor={`policy-input-${index}`}>{policyLabelNames[key]}</label>
-          <br/>
-          <input
-            id={`policy-input-${index}`}
-            type="range"
-            step="0.01"
-            max="1"
-            min="0"
-            name={`policy-input-${index}`}
-            value={policyInputs[index] || value}
-            onChange={(e) => handlePolicyInputChange(index, e.target.value)}
-          />
-          <label htmlFor={`policy-input-${index}`}>{policyInputs[index] || value}</label>
-        </div>
-      ))}
+      <div key={`policy-input-${key}-${index}`}>
+        <label htmlFor={`policy-input-${key}-${index}`}>{policyLabelNames[key]}</label>
+        <br/>
+        <input
+          id={`policy-input-${key}-${index}`}
+          type="range"
+          step="0.01"
+          max="1"
+          min="0"
+          name={`policy-input-${key}-${index}`}
+          value={policyInputs[index] || value}
+          onChange={(e) => handlePolicyInputChange(index, e.target.value)}
+        />
+        <label htmlFor={`policy-input-${key}-${index}`}>{policyInputs[index] || value}</label>
+      </div>      
+    ))}
+
+
 
       <h2>Property Supply Inputs</h2>
       {Object.entries(supplyDefaults).map(([key, value], index) => (
