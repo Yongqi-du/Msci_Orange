@@ -74,7 +74,7 @@ const BasicLayout = () => {
                             <span className="  ml-auto">
                                 <Avatar className="mr-2" size={48} src={avatarUrl}/>
                                 <span >
-                                    <Link to='/Users'>{"Kingston Councils"}</Link>
+                                    <Link to='/User'>{"David Hill"}</Link>
                                 </span>
                             </span>
 
