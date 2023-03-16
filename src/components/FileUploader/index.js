@@ -20,8 +20,8 @@ import { uploadFile } from 'react-s3';
 
 const S3_BUCKET ='rbkhousingbucket';
 const REGION ='eu-west-2';
-const ACCESS_KEY ='AKIAX25LW44KLU6GEL7K';
-const SECRET_ACCESS_KEY ='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';
+const ACCESS_KEY ='test';
+const SECRET_ACCESS_KEY ='test';
 
 const config = {
     bucketName: S3_BUCKET,
